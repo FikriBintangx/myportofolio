@@ -81,6 +81,13 @@ export default function LoginPage() {
                     >
                         {loading ? 'Authenticating...' : 'Initialize Session'}
                     </button>
+
+                    {/* Debug Info */}
+                    <div className="text-[10px] text-white/20 font-mono text-center mt-4">
+                        <p>Debug Status:</p>
+                        <p>URL: {process.env.NEXT_PUBLIC_SUPABASE_URL ? '✅ Connected' : '❌ Missing'}</p>
+                        <p>Key: {process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? '✅ Connected' : '❌ Missing'}</p>
+                    </div>
                 </form>
             </motion.div>
         </div>
