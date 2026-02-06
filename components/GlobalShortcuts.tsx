@@ -10,8 +10,8 @@ export default function GlobalShortcuts() {
 
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
-            // Ctrl + Shift + T: Toggle Theme
-            if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 't') {
+            // Alt + A: Toggle Theme
+            if (e.altKey && e.key.toLowerCase() === 'a') {
                 e.preventDefault();
                 toggleTheme();
             }
@@ -32,8 +32,8 @@ export default function GlobalShortcuts() {
                 }
             }
 
-            // Secret Shortcut: Ctrl + Alt + A for Login (for you)
-            if (e.ctrlKey && e.altKey && e.key.toLowerCase() === 'a') {
+            // Secret Shortcut: Ctrl + Alt + L for Login (changed from A)
+            if (e.ctrlKey && e.altKey && e.key.toLowerCase() === 'l') {
                 e.preventDefault();
                 router.push('/login');
             }

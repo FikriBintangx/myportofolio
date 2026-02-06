@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Home, Smartphone, Layers, Mail, Code } from 'lucide-react';
+import { Menu, X, Home, Smartphone, Layers, Mail, Code, Sun, Moon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import MagneticButton from '../ui/MagneticButton';
 import { useApp } from '@/context/AppContext';
@@ -10,7 +10,7 @@ import { translations } from '@/lib/translations';
 
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
-    const { language, toggleTheme, toggleLanguage } = useApp();
+    const { language, theme, toggleTheme, toggleLanguage } = useApp();
     const t = translations[language];
 
     const links = [
@@ -46,11 +46,22 @@ export default function Navbar() {
                         ))}
                     </div>
 
+                    {/* Theme Toggle Button */}
+                    <MagneticButton>
+                        <button
+                            onClick={toggleTheme}
+                            className="p-2 text-foreground/50 hover:text-foreground transition-colors mr-1"
+                            title="Toggle Theme (Alt + A)"
+                        >
+                            {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                        </button>
+                    </MagneticButton>
+
                     <div className="w-[1px] h-6 bg-foreground/10 mx-2" />
 
                     {/* Shortcuts Visual */}
                     <div className="hidden md:flex flex-col items-center text-[8px] uppercase tracking-tighter text-foreground/30 mr-2 font-mono">
-                        <span>Ctrl+S+T</span>
+                        <span>Alt + A</span>
                         <span>Theme</span>
                     </div>
 
@@ -76,7 +87,7 @@ export default function Navbar() {
                     animate={{ opacity: 1 }}
                     className="flex gap-4 text-[10px] uppercase tracking-[0.2em] text-foreground/20"
                 >
-                    <span>S+T: Theme</span>
+                    <span>Alt+A: Theme</span>
                     <span>U: Lang</span>
                 </motion.div>
             </motion.nav>

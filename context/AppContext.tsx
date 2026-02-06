@@ -56,7 +56,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
-            if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 't') {
+            if (e.altKey && e.key.toLowerCase() === 'a') {
                 e.preventDefault();
                 toggleTheme();
             }
