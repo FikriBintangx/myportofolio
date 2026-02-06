@@ -52,7 +52,7 @@ const items = [
 
 export default function BentoGrid() {
     return (
-        <section id="work" className="min-h-screen bg-black px-6 md:px-20 py-32 relative overflow-hidden">
+        <section id="work" className="min-h-screen bg-background px-6 md:px-20 py-32 relative overflow-hidden">
             {/* Background Glow */}
             <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-[120px] pointer-events-none" />
             <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[120px] pointer-events-none" />
@@ -61,7 +61,7 @@ export default function BentoGrid() {
                 <motion.h2
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    className="text-5xl md:text-7xl font-bold mb-20 text-white tracking-tighter"
+                    className="text-5xl md:text-7xl font-bold mb-20 text-foreground tracking-tighter"
                 >
                     My Arsenal
                 </motion.h2>
@@ -70,12 +70,12 @@ export default function BentoGrid() {
                     {items.map((item, i) => (
                         <SpotlightCard key={i} className={item.className} gradient={item.gradient}>
                             <div className="relative z-10 h-full flex flex-col justify-between">
-                                <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-white mb-4 group-hover:scale-110 transition-transform duration-300">
+                                <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-foreground mb-4 group-hover:scale-110 transition-transform duration-300">
                                     {item.icon}
                                 </div>
                                 <div>
-                                    <h3 className="text-3xl font-bold text-white mb-2 tracking-tight">{item.title}</h3>
-                                    <p className="text-white/50">{item.description}</p>
+                                    <h3 className="text-3xl font-bold text-foreground mb-2 tracking-tight">{item.title}</h3>
+                                    <p className="text-foreground/50">{item.description}</p>
                                 </div>
                             </div>
                         </SpotlightCard>
@@ -103,7 +103,7 @@ function SpotlightCard({ children, className, gradient }: { children: React.Reac
             viewport={{ once: true, margin: "-50px" }}
             onMouseMove={handleMouseMove}
             className={cn(
-                "group relative border border-white/10 bg-zinc-900/30 overflow-hidden rounded-3xl p-8 backdrop-blur-sm hover:border-white/20 transition-colors duration-500",
+                "group relative border border-foreground/10 bg-zinc-900/30 overflow-hidden rounded-3xl p-8 backdrop-blur-sm hover:border-white/20 transition-colors duration-500",
                 className
             )}
         >

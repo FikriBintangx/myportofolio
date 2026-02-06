@@ -50,6 +50,17 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     const toggleTheme = () => setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
     const toggleLanguage = () => setLanguage(prev => (prev === 'id' ? 'en' : 'id'));
 
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'l') {
+                e.preventDefault();
+                toggleTheme();
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, []);
+
     return (
         <AppContext.Provider value={{ theme, language, cvUrl, toggleTheme, toggleLanguage, setCvUrl }}>
             {children}

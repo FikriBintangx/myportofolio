@@ -21,7 +21,7 @@ export default function Testimonials() {
     }, []);
 
     return (
-        <section className="h-screen bg-black flex flex-col justify-center items-center overflow-hidden">
+        <section className="h-screen bg-background flex flex-col justify-center items-center overflow-hidden">
             <div className="relative w-full max-w-6xl px-6 text-center">
                 <motion.div
                     key={index}

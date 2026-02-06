@@ -59,7 +59,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="bg-black text-white selection:bg-white selection:text-black cursor-none overflow-x-hidden">
+    <main className="bg-background text-foreground transition-colors duration-500 selection:bg-foreground selection:text-background cursor-none overflow-x-hidden">
       <Loader progress={loadingProgress} onComplete={() => setIsLoaded(true)} />
 
       {isLoaded && (
@@ -81,7 +81,7 @@ export default function Home() {
             <Experience />
 
             {/* Final Contact Section */}
-            <section id="contact" className="min-h-screen bg-black flex flex-col items-center justify-center px-6 relative overflow-hidden border-t border-white/5">
+            <section id="contact" className="min-h-screen bg-background flex flex-col items-center justify-center px-6 relative overflow-hidden border-t border-foreground/5">
               <div className="absolute inset-0 bg-gradient-to-t from-white/[0.02] to-transparent pointer-events-none" />
 
               <h2 className="text-5xl md:text-9xl font-bold tracking-tighter text-center mb-16 leading-[0.85]">

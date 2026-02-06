@@ -14,7 +14,8 @@ export default function AdminDashboard() {
     const supabase = createClient();
 
     // Profile Form State
-    const [profile, setProfile] = useState({
+    const [profile, setProfile] = useState<any>({
+        id: null,
         full_name: '',
         role: '',
         bio: '',

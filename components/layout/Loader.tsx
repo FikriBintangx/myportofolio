@@ -22,7 +22,7 @@ export default function Loader({ progress, onComplete }: { progress: number, onC
                 <motion.div
                     initial={{ opacity: 1 }}
                     exit={{ opacity: 0, transition: { duration: 1, ease: [0.76, 0, 0.24, 1] } }}
-                    className="fixed top-0 left-0 w-screen h-screen z-[100] bg-black flex flex-col items-center justify-center overflow-hidden"
+                    className="fixed top-0 left-0 w-screen h-screen z-[100] bg-background flex flex-col items-center justify-center overflow-hidden"
                 >
                     {/* Abstract background movement */}
                     <motion.div
@@ -32,7 +32,7 @@ export default function Loader({ progress, onComplete }: { progress: number, onC
                             opacity: [0.1, 0.3, 0.1]
                         }}
                         transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-                        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-white/5 rounded-full blur-[120px]"
+                        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-foreground/5 rounded-full blur-[120px]"
                     />
 
                     <div className="relative z-10 flex flex-col items-center justify-center">
@@ -41,14 +41,14 @@ export default function Loader({ progress, onComplete }: { progress: number, onC
                             animate={{ opacity: 1, y: 0 }}
                             className="mb-12"
                         >
-                            <h1 className="text-2xl font-bold tracking-[0.5em] uppercase text-white/40">
-                                IS4GI<span className="text-white">.dev</span>
+                            <h1 className="text-2xl font-bold tracking-[0.5em] uppercase text-foreground/40">
+                                IS4GI<span className="text-foreground">.dev</span>
                             </h1>
                         </motion.div>
 
-                        <div className="w-64 h-[1px] bg-white/10 relative overflow-hidden">
+                        <div className="w-64 h-[1px] bg-foreground/10 relative overflow-hidden">
                             <motion.div
-                                className="absolute inset-y-0 left-0 bg-white"
+                                className="absolute inset-y-0 left-0 bg-foreground"
                                 initial={{ width: 0 }}
                                 animate={{ width: `${progress}%` }}
                                 transition={{ duration: 0.5 }}
@@ -56,7 +56,7 @@ export default function Loader({ progress, onComplete }: { progress: number, onC
                         </div>
 
                         <motion.div
-                            className="mt-4 font-mono text-[10px] tracking-[0.2em] text-white/30 uppercase"
+                            className="mt-4 font-mono text-[10px] tracking-[0.2em] text-foreground/30 uppercase"
                         >
                             Initializing Systems — {Math.round(progress)}%
                         </motion.div>

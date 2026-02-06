@@ -27,9 +27,9 @@ const stack = [
 
 export default function Stack() {
     return (
-        <section id="stack" className="bg-black py-40 px-6 md:px-20 border-t border-white/5">
+        <section id="stack" className="bg-background py-40 px-6 md:px-20 border-t border-foreground/5">
             <div className="max-w-7xl mx-auto">
-                <h2 className="text-4xl md:text-6xl font-bold tracking-tighter text-white mb-24">The Toolkit</h2>
+                <h2 className="text-4xl md:text-6xl font-bold tracking-tighter text-foreground mb-24">The Toolkit</h2>
 
                 <div className="space-y-12">
                     {stack.map((item, i) => (
@@ -39,14 +39,14 @@ export default function Stack() {
                             whileInView={{ opacity: 1, x: 0 }}
                             transition={{ delay: i * 0.1 }}
                             viewport={{ once: true }}
-                            className="group flex flex-col md:flex-row md:items-center justify-between border-b border-white/5 pb-12"
+                            className="group flex flex-col md:flex-row md:items-center justify-between border-b border-foreground/5 pb-12"
                         >
-                            <div className="text-sm uppercase tracking-[0.3em] text-white/30 group-hover:text-white transition-colors mb-4 md:mb-0">
+                            <div className="text-sm uppercase tracking-[0.3em] text-foreground/30 group-hover:text-foreground transition-colors mb-4 md:mb-0">
                                 {item.category}
                             </div>
                             <div className="flex flex-wrap gap-4 md:gap-8 justify-end">
                                 {item.tools.map((tool) => (
-                                    <span key={tool} className="text-2xl md:text-4xl font-bold tracking-tighter text-white/60 group-hover:text-white transition-colors">
+                                    <span key={tool} className="text-2xl md:text-4xl font-bold tracking-tighter text-foreground/60 group-hover:text-foreground transition-colors">
                                         {tool}
                                     </span>
                                 ))}

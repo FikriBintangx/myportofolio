@@ -12,7 +12,7 @@ const stats = [
 
 export default function Stats() {
     return (
-        <section className="bg-black text-white py-20 px-6 md:px-20 border-y border-white/10">
+        <section className="bg-background text-foreground py-20 px-6 md:px-20 border-y border-foreground/10">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
                 {stats.map((stat, i) => (
                     <Counter key={i} value={stat.value} label={stat.label} suffix={stat.suffix} />

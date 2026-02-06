@@ -48,14 +48,14 @@ export default function Devices() {
 
     if (isLoading) {
         return (
-            <section className="h-screen bg-black flex items-center justify-center">
-                <div className="text-white/20 animate-pulse font-mono text-xs uppercase tracking-[0.4em]">Loading Arsenal...</div>
+            <section className="h-screen bg-background flex items-center justify-center">
+                <div className="text-foreground/20 animate-pulse font-mono text-xs uppercase tracking-[0.4em]">Loading Arsenal...</div>
             </section>
         );
     }
 
     return (
-        <div className="bg-black py-20">
+        <div className="bg-background transition-colors duration-500 py-20">
             {gearItems.map((item, idx) => (
                 <SingleDevice key={idx} item={item} isFirst={idx === 0} index={idx} />
             ))}
@@ -126,7 +126,7 @@ function SingleDevice({ item, isFirst, index }: { item: GearItem, isFirst: boole
             const x = (w - img.naturalWidth * scale) / 2;
             const y = (h - img.naturalHeight * scale) / 2;
 
-            ctx.fillStyle = "#000";
+            ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--background').trim();
             ctx.fillRect(0, 0, w, h);
             ctx.drawImage(img, x, y, img.naturalWidth * scale, img.naturalHeight * scale);
         }
@@ -159,7 +159,7 @@ function SingleDevice({ item, isFirst, index }: { item: GearItem, isFirst: boole
                             initial={{ opacity: 0, x: isEven ? -20 : 20 }}
                             whileInView={{ opacity: 1, x: 0 }}
                             viewport={{ once: true }}
-                            className="text-5xl md:text-8xl font-bold tracking-tighter text-white leading-none"
+                            className="text-5xl md:text-8xl font-bold tracking-tighter text-foreground leading-none"
                         >
                             {item.name}
                         </motion.h2>
@@ -168,7 +168,7 @@ function SingleDevice({ item, isFirst, index }: { item: GearItem, isFirst: boole
                             whileInView={{ opacity: 1 }}
                             viewport={{ once: true }}
                             transition={{ delay: 0.2 }}
-                            className="text-white/60 text-sm md:text-lg uppercase tracking-[0.4em] font-light max-w-md mx-auto md:mx-0 inline-block"
+                            className="text-foreground/60 text-sm md:text-lg uppercase tracking-[0.4em] font-light max-w-md mx-auto md:mx-0 inline-block"
                         >
                             {item.description}
                         </motion.p>
@@ -178,10 +178,10 @@ function SingleDevice({ item, isFirst, index }: { item: GearItem, isFirst: boole
                     <div className="flex-1 w-full flex justify-center items-center">
                         <div
                             ref={wrapperRef}
-                            className="relative w-full max-w-lg aspect-[4/3] rounded-[2rem] overflow-hidden border border-white/10 shadow-3xl bg-zinc-900/30 backdrop-blur-sm"
+                            className="relative w-full max-w-lg aspect-[4/3] rounded-[2rem] overflow-hidden border border-foreground/10 shadow-3xl bg-zinc-900/30 backdrop-blur-sm"
                         >
                             <canvas ref={canvasRef} className="w-full h-full object-cover pointer-events-none" />
-                            <div className="absolute inset-0 bg-gradient-to-tr from-white/5 to-transparent pointer-events-none" />
+                            <div className="absolute inset-0 bg-gradient-to-tr from-foreground/5 to-transparent pointer-events-none" />
                         </div>
                     </div>
                 </div>
@@ -189,7 +189,7 @@ function SingleDevice({ item, isFirst, index }: { item: GearItem, isFirst: boole
                 {isFirst && (
                     <motion.p
                         style={{ opacity: scrollHintOpacity }}
-                        className="absolute bottom-10 text-white/30 text-[10px] uppercase tracking-[0.5em] font-mono"
+                        className="absolute bottom-10 text-foreground/30 text-[10px] uppercase tracking-[0.5em] font-mono"
                     >
                         Scroll to Explore
                     </motion.p>
