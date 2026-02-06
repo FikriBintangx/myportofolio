@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/client';
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import TiltCard from '../ui/TiltCard';
 
 interface Project {
     id: string;
@@ -67,20 +68,23 @@ export default function Projects() {
                             transition={{ duration: 0.8, delay: i * 0.1 }}
                             viewport={{ once: true }}
                             className={i === 1 ? "md:mt-32" : ""}
+
                         >
-                            <div className="group relative aspect-[4/5] bg-zinc-900 rounded-2xl overflow-hidden mb-8">
-                                <motion.img
-                                    src={project.thumbnail_url}
-                                    alt={project.title}
-                                    whileHover={{ scale: 1.05 }}
-                                    transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
-                                    className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity"
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent flex flex-col justify-end p-8">
-                                    <div className="text-[10px] uppercase tracking-widest text-foreground/50 mb-2">{project.category}</div>
-                                    <h3 className="text-3xl font-bold text-foreground tracking-tighter">{project.title}</h3>
+                            <TiltCard>
+                                <div className="group relative aspect-[4/5] bg-zinc-900 rounded-2xl overflow-hidden mb-8">
+                                    <motion.img
+                                        src={project.thumbnail_url}
+                                        alt={project.title}
+                                        whileHover={{ scale: 1.05 }}
+                                        transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
+                                        className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity"
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent flex flex-col justify-end p-8">
+                                        <div className="text-[10px] uppercase tracking-widest text-foreground/50 mb-2">{project.category}</div>
+                                        <h3 className="text-3xl font-bold text-foreground tracking-tighter">{project.title}</h3>
+                                    </div>
                                 </div>
-                            </div>
+                            </TiltCard>
                             <div className="flex justify-between items-center text-xs text-foreground/40 font-mono">
                                 <span>{project.link ? 'View Case Study' : 'Case Study Coming Soon'}</span>
                                 <span>{project.project_date}</span>

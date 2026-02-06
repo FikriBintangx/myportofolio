@@ -12,35 +12,15 @@ import Experience from "@/components/sections/Experience"; // Added import
 import CustomCursor from "@/components/ui/CustomCursor";
 import MagneticButton from "@/components/ui/MagneticButton";
 import ScrollProgress from "@/components/ui/ScrollProgress";
-
-const frameCount = 192;
+import Lanyard from "@/components/ui/Lanyard/Lanyard";
 
 export default function Home() {
-  const [loadingProgress, setLoadingProgress] = useState(0);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [loadingProgress, setLoadingProgress] = useState(100);
   const [isLoaded, setIsLoaded] = useState(false);
-
   const [whatsapp, setWhatsapp] = useState('');
 
   useEffect(() => {
-    let loadedCount = 0;
-    const totalAssets = frameCount;
-
-    const preloadImages = async () => {
-      for (let i = 1; i <= frameCount; i++) {
-        const img = new Image();
-        const src = `/sequence/ezgif-frame-${i.toString().padStart(3, '0')}.jpg`;
-        img.src = src;
-        img.onload = () => {
-          loadedCount++;
-          setLoadingProgress((loadedCount / totalAssets) * 100);
-        };
-        img.onerror = () => {
-          loadedCount++;
-          setLoadingProgress((loadedCount / totalAssets) * 100);
-        };
-      }
-    };
-
     const fetchConfig = async () => {
       const { createClient } = await import('@/lib/supabase/client');
       const supabase = createClient();
@@ -52,9 +32,9 @@ export default function Home() {
         const formatted = cleaned.startsWith('0') ? '62' + cleaned.slice(1) : cleaned;
         setWhatsapp(formatted);
       }
+      setIsLoaded(true); // Set isLoaded to true after config fetch or immediately
     };
 
-    preloadImages();
     fetchConfig();
   }, []);
 
@@ -67,6 +47,12 @@ export default function Home() {
           <CustomCursor />
           <ScrollProgress />
           <div className="bg-noise opacity-[0.03] scale-150"></div>
+
+          {/* Lanyard - Fixed at top, full viewport */}
+          <div className="fixed top-0 left-0 w-full h-screen z-50 pointer-events-none">
+            <Lanyard position={[0, 0, 24]} gravity={[0, -40, 0]} />
+          </div>
+
           <Navbar />
 
           <div className="relative z-10">

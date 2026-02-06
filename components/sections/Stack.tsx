@@ -1,59 +1,51 @@
-'use client';
+import { InfiniteMovingCards } from '../ui/InfiniteMovingCards';
 
-import { motion } from 'framer-motion';
+interface StackItem {
+    category: string;
+    tools: string[];
+}
 
-const stack = [
+const stack: StackItem[] = [
     {
         category: "Languages",
-        tools: ["HTML/CSS", "Dart", "JavaScript", "PHP"]
+        tools: ["HTML/CSS", "Dart", "JavaScript", "PHP", "TypeScript", "SQL"]
     },
     {
-        category: "Frameworks",
-        tools: ["React", "Next.js", "Flutter", "CodeIgniter 3"]
+        category: "Frameworks & Libraries",
+        tools: ["React", "Next.js", "Flutter", "TailwindCSS", "Framer Motion", "CodeIgniter"]
     },
     {
-        category: "AI Tools",
-        tools: ["ChatGPT", "Gemini", "Antigravity"]
-    },
-    {
-        category: "Environment",
-        tools: ["Visual Studio", "Cursor", "Git"]
+        category: "Tools & AI",
+        tools: ["ChatGPT", "Gemini", "Antigravity", "Git", "Cursor", "VS Code", "Figma"]
     },
     {
         category: "Hardware",
-        tools: ["ROG Flow X13", "Oppo Reno 14"]
+        tools: ["ROG Flow X13", "Oppo Reno 14", "Mechanical Keyboard", "Sony Alpha"]
     }
 ];
 
 export default function Stack() {
     return (
-        <section id="stack" className="bg-background py-40 px-6 md:px-20 border-t border-foreground/5">
-            <div className="max-w-7xl mx-auto">
-                <h2 className="text-4xl md:text-6xl font-bold tracking-tighter text-foreground mb-24">The Toolkit</h2>
+        <section id="stack" className="bg-background py-40 overflow-hidden border-t border-foreground/5 relative">
+            <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-background via-transparent to-background z-10" />
 
-                <div className="space-y-12">
-                    {stack.map((item, i) => (
-                        <motion.div
-                            key={item.category}
-                            initial={{ opacity: 0, x: -20 }}
-                            whileInView={{ opacity: 1, x: 0 }}
-                            transition={{ delay: i * 0.1 }}
-                            viewport={{ once: true }}
-                            className="group flex flex-col md:flex-row md:items-center justify-between border-b border-foreground/5 pb-12"
-                        >
-                            <div className="text-sm uppercase tracking-[0.3em] text-foreground/30 group-hover:text-foreground transition-colors mb-4 md:mb-0">
-                                {item.category}
-                            </div>
-                            <div className="flex flex-wrap gap-4 md:gap-8 justify-end">
-                                {item.tools.map((tool) => (
-                                    <span key={tool} className="text-2xl md:text-4xl font-bold tracking-tighter text-foreground/60 group-hover:text-foreground transition-colors">
-                                        {tool}
-                                    </span>
-                                ))}
-                            </div>
-                        </motion.div>
-                    ))}
-                </div>
+            <div className="max-w-7xl mx-auto px-6 md:px-20 mb-20 text-center">
+                <h2 className="text-4xl md:text-6xl font-bold tracking-tighter text-foreground mb-4">The Stack</h2>
+                <p className="text-foreground/40 text-xs uppercase tracking-[0.3em]">Technologies & Tools I use daily</p>
+            </div>
+
+            <div className="flex flex-col gap-16 relative z-0">
+                {stack.map((item, i) => (
+                    <div key={item.category} className="w-full">
+                        {/* <div className="text-center mb-4 text-[10px] uppercase tracking-widest text-foreground/30">{item.category}</div> */}
+                        <InfiniteMovingCards
+                            items={[...item.tools, ...item.tools, ...item.tools]} // Duplicate to ensure enough width for loop if items are few
+                            direction={i % 2 === 0 ? "left" : "right"}
+                            speed="slow"
+                            className="w-full"
+                        />
+                    </div>
+                ))}
             </div>
         </section>
     );
