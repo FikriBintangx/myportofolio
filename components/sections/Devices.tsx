@@ -159,7 +159,7 @@ function SingleDevice({ item, isFirst, index }: { item: GearItem, isFirst: boole
                             initial={{ opacity: 0, x: isEven ? -20 : 20 }}
                             whileInView={{ opacity: 1, x: 0 }}
                             viewport={{ once: true }}
-                            className="text-5xl md:text-8xl font-bold tracking-tighter text-foreground leading-none"
+                            className="text-4xl sm:text-5xl md:text-8xl font-bold tracking-tighter text-foreground leading-none"
                         >
                             {item.name}
                         </motion.h2>

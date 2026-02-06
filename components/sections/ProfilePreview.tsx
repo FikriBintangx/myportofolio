@@ -65,26 +65,26 @@ export default function ProfilePreview() {
                     {profile.role}
                 </motion.div>
 
-                <h2 className="text-6xl md:text-8xl font-bold tracking-tighter text-foreground dark:text-foreground light:text-black mb-8 leading-[0.9]">
+                <h2 className="text-4xl sm:text-6xl md:text-8xl font-bold tracking-tighter text-foreground dark:text-foreground light:text-black mb-6 md:mb-8 leading-[1.0] md:leading-[0.9]">
                     {language === 'id' ? 'Halo, Saya' : "Hello, I'm"} <span className="text-foreground/40 italic">{profile.full_name}</span>.
                 </h2>
 
                 <p
-                    className="text-xl md:text-2xl text-foreground/60 dark:text-foreground/60 light:text-black/60 max-w-2xl font-light leading-relaxed mb-12"
+                    className="text-base sm:text-lg md:text-2xl text-foreground/60 dark:text-foreground/60 light:text-black/60 max-w-2xl font-light leading-relaxed mb-8 md:mb-12"
                     dangerouslySetInnerHTML={{ __html: profile.bio }}
                 />
 
-                <div className="flex flex-wrap gap-12 text-foreground dark:text-foreground light:text-black">
+                <div className="flex flex-col sm:flex-row flex-wrap gap-8 md:gap-12 text-foreground dark:text-foreground light:text-black">
                     <div>
-                        <div className="text-[10px] uppercase tracking-widest text-foreground/30 mb-2">{t.focus}</div>
+                        <div className="text-[9px] md:text-[10px] uppercase tracking-widest text-foreground/30 mb-1 md:mb-2">{t.focus}</div>
                         <div className="text-sm text-foreground/80 dark:text-foreground/80 light:text-black/80">Next.js / Motion / UI</div>
                     </div>
                     <div>
-                        <div className="text-[10px] uppercase tracking-widest text-foreground/30 mb-2">{t.status}</div>
+                        <div className="text-[9px] md:text-[10px] uppercase tracking-widest text-foreground/30 mb-1 md:mb-2">{t.status}</div>
                         <div className="text-sm text-foreground/80 dark:text-foreground/80 light:text-black/80">{language === 'id' && profile.status === 'University Student' ? t.student : profile.status}</div>
                     </div>
                     <div>
-                        <div className="text-[10px] uppercase tracking-widest text-foreground/30 mb-2">{t.location}</div>
+                        <div className="text-[9px] md:text-[10px] uppercase tracking-widest text-foreground/30 mb-1 md:mb-2">{t.location}</div>
                         <div className="text-sm text-foreground/80 dark:text-foreground/80 light:text-black/80">{profile.location}</div>
                     </div>
                 </div>

@@ -81,11 +81,11 @@ export default function Navbar() {
                     </MagneticButton>
                 </div>
 
-                {/* Shortcut Legend */}
+                {/* Shortcut Legend - Hidden on Mobile */}
                 <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className="flex gap-4 text-[10px] uppercase tracking-[0.2em] text-foreground/20"
+                    className="hidden md:flex gap-4 text-[10px] uppercase tracking-[0.2em] text-foreground/20"
                 >
                     <span>Alt+A: Theme</span>
                     <span>U: Lang</span>
