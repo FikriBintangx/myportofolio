@@ -5,17 +5,11 @@ import { useApp } from '@/context/AppContext';
 import { useRouter } from 'next/navigation';
 
 export default function GlobalShortcuts() {
-    const { toggleTheme, toggleLanguage, cvUrl } = useApp();
+    const { toggleLanguage, cvUrl } = useApp();
     const router = useRouter();
 
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
-            // Alt + A: Toggle Theme
-            if (e.altKey && e.key.toLowerCase() === 'a') {
-                e.preventDefault();
-                toggleTheme();
-            }
-
             // Ctrl + U: Toggle Language
             if (e.ctrlKey && e.key.toLowerCase() === 'u') {
                 e.preventDefault();
@@ -32,8 +26,8 @@ export default function GlobalShortcuts() {
                 }
             }
 
-            // Secret Shortcut: Ctrl + Alt + L for Login (changed from A)
-            if (e.ctrlKey && e.altKey && e.key.toLowerCase() === 'l') {
+            // Secret Shortcut: Ctrl + Alt + A for Login
+            if (e.ctrlKey && e.altKey && e.key.toLowerCase() === 'a') {
                 e.preventDefault();
                 router.push('/login');
             }
@@ -41,7 +35,7 @@ export default function GlobalShortcuts() {
 
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [toggleTheme, toggleLanguage, cvUrl, router]);
+    }, [toggleLanguage, cvUrl, router]);
 
     return null;
 }
