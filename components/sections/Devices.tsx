@@ -30,7 +30,7 @@ export default function Devices() {
                 .order('order', { ascending: true });
 
             if (data && data.length > 0) {
-                setGearItems(data.map(item => ({
+                setGearItems(data.map((item: any) => ({
                     name: item.name,
                     description: item.description,
                     sequencePath: item.sequence_path,
