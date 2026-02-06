@@ -34,7 +34,7 @@ export default function Navbar() {
                             <MagneticButton key={link.name} className="relative group">
                                 <a
                                     href={link.href}
-                                    className="w-12 h-12 flex items-center justify-center rounded-full bg-transparent hover:bg-foreground/10 transition-colors text-foreground/70 hover:text-foreground"
+                                    className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full bg-transparent hover:bg-foreground/10 transition-colors text-foreground/70 hover:text-foreground"
                                 >
                                     {link.icon}
                                     {/* Tooltip */}
@@ -74,7 +74,7 @@ export default function Navbar() {
                     <MagneticButton>
                         <button
                             onClick={() => setIsOpen(true)}
-                            className="w-12 h-12 flex items-center justify-center rounded-full bg-foreground text-background font-bold hover:scale-110 transition-transform"
+                            className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full bg-foreground text-background font-bold hover:scale-110 transition-transform"
                         >
                             <Menu className="w-5 h-5" />
                         </button>

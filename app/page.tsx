@@ -82,11 +82,11 @@ export default function Home() {
 
             {/* Final Contact Section */}
             <section id="contact" className="min-h-screen bg-background flex flex-col items-center justify-center px-6 relative overflow-hidden border-t border-foreground/5">
-              <div className="absolute inset-0 bg-gradient-to-t from-white/[0.02] to-transparent pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-t from-foreground/[0.02] to-transparent pointer-events-none" />
 
-              <h2 className="text-5xl md:text-9xl font-bold tracking-tighter text-center mb-16 leading-[0.85]">
+              <h2 className="text-5xl md:text-9xl font-bold tracking-tighter text-center mb-16 leading-[0.85] text-foreground">
                 Let’s build <br />
-                <span className="text-white/20 italic">something</span> <br />
+                <span className="text-foreground/20 italic">something</span> <br />
                 meaningful.
               </h2>
 
@@ -95,13 +95,13 @@ export default function Home() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <MagneticButton className="group relative px-12 py-5 bg-white text-black text-xs uppercase tracking-[0.4em] font-bold rounded-full hover:scale-105 transition-transform">
+                <MagneticButton className="group relative px-12 py-5 bg-foreground text-background text-xs uppercase tracking-[0.4em] font-bold rounded-full hover:scale-105 transition-transform">
                   Get in Touch
-                  <div className="absolute inset-0 rounded-full bg-white blur-xl opacity-0 group-hover:opacity-30 transition-opacity" />
+                  <div className="absolute inset-0 rounded-full bg-foreground blur-xl opacity-0 group-hover:opacity-30 transition-opacity" />
                 </MagneticButton>
               </a>
 
-              <footer className="absolute bottom-10 left-0 w-full px-10 flex justify-between items-center text-[10px] uppercase tracking-widest text-white/20 font-mono">
+              <footer className="absolute bottom-10 left-0 w-full px-10 flex justify-between items-center text-[10px] uppercase tracking-widest text-foreground/20 font-mono">
                 <p>© 2026 IS4GI.dev</p>
                 <p>Awwwards level / Next.js / Motion</p>
               </footer>
