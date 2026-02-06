@@ -1,0 +1,83 @@
+import { createClient } from '@/lib/supabase/client';
+import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
+
+export default function Projects() {
+    const [projects, setProjects] = useState<any[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchProjects = async () => {
+            const supabase = createClient();
+            if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+                setIsLoading(false);
+                return;
+            }
+
+            const { data, error } = await supabase
+                .from('projects')
+                .select('*')
+                .order('order', { ascending: true });
+
+            if (data && !error) {
+                setProjects(data);
+            }
+            setIsLoading(false);
+        };
+
+        fetchProjects();
+    }, []);
+
+    if (isLoading) return (
+        <section id="projects" className="bg-black py-40 px-6 md:px-20 min-h-[50vh] flex items-center justify-center">
+            <div className="text-white/20 animate-pulse font-mono uppercase tracking-[0.4em] text-xs">Loading Projects...</div>
+        </section>
+    );
+
+    if (projects.length === 0) return null;
+
+    return (
+        <section id="projects" className="bg-black py-40 px-6 md:px-20">
+            <div className="max-w-7xl mx-auto">
+                <div className="flex justify-between items-end mb-24 border-b border-white/5 pb-12">
+                    <div>
+                        <h2 className="text-4xl md:text-6xl font-bold tracking-tighter text-white">Selected Works</h2>
+                        <p className="text-white/40 mt-4 max-w-sm uppercase text-[10px] tracking-[0.2em]">A collection of digital objects and interfaces.</p>
+                    </div>
+                    <div className="text-white/20 text-xs font-mono">03 — Projects</div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-24">
+                    {projects.map((project, i) => (
+                        <motion.div
+                            key={i}
+                            initial={{ opacity: 0, y: 30 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.8, delay: i * 0.1 }}
+                            viewport={{ once: true }}
+                            className={i === 1 ? "md:mt-32" : ""}
+                        >
+                            <div className="group relative aspect-[4/5] bg-zinc-900 rounded-2xl overflow-hidden mb-8">
+                                <motion.img
+                                    src={project.thumbnail_url}
+                                    alt={project.title}
+                                    whileHover={{ scale: 1.05 }}
+                                    transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
+                                    className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-8">
+                                    <div className="text-[10px] uppercase tracking-widest text-white/50 mb-2">{project.category}</div>
+                                    <h3 className="text-3xl font-bold text-white tracking-tighter">{project.title}</h3>
+                                </div>
+                            </div>
+                            <div className="flex justify-between items-center text-xs text-white/40 font-mono">
+                                <span>{project.link ? 'View Case Study' : 'Case Study Coming Soon'}</span>
+                                <span>{project.project_date}</span>
+                            </div>
+                        </motion.div>
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
+}
