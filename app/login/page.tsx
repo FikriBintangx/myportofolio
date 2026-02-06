@@ -17,16 +17,26 @@ export default function LoginPage() {
         e.preventDefault();
         setLoading(true);
 
-        const { error } = await supabase.auth.signInWithPassword({
-            email,
-            password,
-        });
+        try {
+            if (!supabase.auth) {
+                throw new Error("Supabase is not configured. Please check your Environment Variables in Vercel.");
+            }
 
-        if (error) {
-            alert(error.message);
+            const { error } = await supabase.auth.signInWithPassword({
+                email,
+                password,
+            });
+
+            if (error) {
+                alert("Login Error: " + error.message);
+                setLoading(false);
+            } else {
+                router.push('/admin');
+            }
+        } catch (err: any) {
+            console.error(err);
+            alert(err.message || "An unexpected error occurred during authentication.");
             setLoading(false);
-        } else {
-            router.push('/admin');
         }
     };
 
