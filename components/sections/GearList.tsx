@@ -4,8 +4,17 @@ import { createClient } from '@/lib/supabase/client';
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 
+interface GearItem {
+    id: string;
+    name: string;
+    description: string;
+    image_url: string;
+    is_active: boolean;
+    order: number;
+}
+
 export default function GearList() {
-    const [gear, setGear] = useState<any[]>([]);
+    const [gear, setGear] = useState<GearItem[]>([]);
 
     useEffect(() => {
         const fetchGear = async () => {

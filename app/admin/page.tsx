@@ -13,8 +13,18 @@ export default function AdminDashboard() {
     const router = useRouter();
     const supabase = createClient();
 
+    interface Profile {
+        id: string | number | null;
+        full_name: string;
+        role: string;
+        bio: string;
+        location: string;
+        status: string;
+        whatsapp: string;
+    }
+
     // Profile Form State
-    const [profile, setProfile] = useState<any>({
+    const [profile, setProfile] = useState<Profile>({
         id: null,
         full_name: '',
         role: '',
@@ -24,11 +34,23 @@ export default function AdminDashboard() {
         whatsapp: ''
     });
 
+    interface Project {
+        id?: string | number;
+        title: string;
+        description: string;
+        thumbnail_url: string;
+        project_date: string;
+        category: string;
+        link: string;
+        image_urls?: string[];
+        order?: number;
+    }
+
     // Projects State
-    const [projects, setProjects] = useState<any[]>([]);
-    const [editingProject, setEditingProject] = useState<any>(null);
+    const [projects, setProjects] = useState<Project[]>([]);
+    const [editingProject, setEditingProject] = useState<Project | null>(null);
     const [isAddingProject, setIsAddingProject] = useState(false);
-    const [addingProjectData, setAddingProjectData] = useState({
+    const [addingProjectData, setAddingProjectData] = useState<Project>({
         title: '',
         description: '',
         thumbnail_url: '',
@@ -37,11 +59,24 @@ export default function AdminDashboard() {
         link: ''
     });
 
+    interface Gear {
+        id?: string | number;
+        name: string;
+        description: string;
+        image_url: string;
+        sequence_path: string;
+        frame_count: number;
+        start_frame: number;
+        is_active: boolean;
+        is_pinned: boolean;
+        order: number;
+    }
+
     // Gear (Devices) State
-    const [gear, setGear] = useState<any[]>([]);
-    const [editingGear, setEditingGear] = useState<any>(null);
+    const [gear, setGear] = useState<Gear[]>([]);
+    const [editingGear, setEditingGear] = useState<Gear | null>(null);
     const [isAddingGear, setIsAddingGear] = useState(false);
-    const [addingGearData, setAddingGearData] = useState({
+    const [addingGearData, setAddingGearData] = useState<Gear>({
         name: '',
         description: '',
         image_url: '',
@@ -118,7 +153,7 @@ export default function AdminDashboard() {
         }
     };
 
-    const handleProjectDelete = async (id: number) => {
+    const handleProjectDelete = async (id: any) => {
         if (confirm('Delete this project?')) {
             const { error } = await supabase.from('projects').delete().eq('id', id);
             if (!error) fetchProjects();
@@ -219,7 +254,7 @@ export default function AdminDashboard() {
         }
     };
 
-    const handleGearDelete = async (id: number) => {
+    const handleGearDelete = async (id: any) => {
         if (confirm('Delete this device?')) {
             const { error } = await supabase.from('gear').delete().eq('id', id);
             if (!error) fetchGear();

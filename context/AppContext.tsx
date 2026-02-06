@@ -33,8 +33,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     useEffect(() => {
         const savedTheme = localStorage.getItem('theme') as Theme;
         const savedLang = localStorage.getItem('lang') as Language;
-        if (savedTheme) setTheme(savedTheme);
-        if (savedLang) setLanguage(savedLang);
+        if (savedTheme) {
+            setTheme(savedTheme);
+        }
+        if (savedLang) {
+            setLanguage(savedLang);
+        }
     }, []);
 
     useEffect(() => {
@@ -52,7 +56,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
-            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 't') {
+            if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 't') {
                 e.preventDefault();
                 toggleTheme();
             }

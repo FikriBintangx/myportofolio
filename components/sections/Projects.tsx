@@ -2,8 +2,19 @@ import { createClient } from '@/lib/supabase/client';
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 
+interface Project {
+    id: string;
+    title: string;
+    description: string;
+    thumbnail_url: string;
+    project_date: string;
+    category: string;
+    link: string;
+    order: number;
+}
+
 export default function Projects() {
-    const [projects, setProjects] = useState<any[]>([]);
+    const [projects, setProjects] = useState<Project[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {

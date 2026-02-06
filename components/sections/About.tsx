@@ -20,14 +20,14 @@ export default function About() {
                 {words.map((word, i) => {
                     const start = i / words.length;
                     const end = start + (1 / words.length);
-                    return <Word key={i} children={word} progress={scrollYProgress} range={[start, end]} />
+                    return <Word key={i} progress={scrollYProgress} range={[start, end]}>{word}</Word>
                 })}
             </div>
         </section>
     );
 }
 
-const Word = ({ children, progress, range }: { children: string, progress: any, range: [number, number] }) => {
+const Word = ({ children, progress, range }: { children: string, progress: import('framer-motion').MotionValue<number>, range: [number, number] }) => {
     const opacity = useTransform(progress, range, [0.1, 1]);
     return (
         <motion.span style={{ opacity }} className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-foreground transition-opacity duration-300">

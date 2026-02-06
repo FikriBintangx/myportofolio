@@ -10,8 +10,8 @@ export default function GlobalShortcuts() {
 
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
-            // Ctrl + Q: Toggle Theme
-            if (e.ctrlKey && e.key.toLowerCase() === 'q') {
+            // Ctrl + Shift + T: Toggle Theme
+            if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 't') {
                 e.preventDefault();
                 toggleTheme();
             }

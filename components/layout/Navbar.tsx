@@ -50,7 +50,7 @@ export default function Navbar() {
 
                     {/* Shortcuts Visual */}
                     <div className="hidden md:flex flex-col items-center text-[8px] uppercase tracking-tighter text-foreground/30 mr-2 font-mono">
-                        <span>Ctrl + T</span>
+                        <span>Ctrl+S+T</span>
                         <span>Theme</span>
                     </div>
 
@@ -76,7 +76,7 @@ export default function Navbar() {
                     animate={{ opacity: 1 }}
                     className="flex gap-4 text-[10px] uppercase tracking-[0.2em] text-foreground/20"
                 >
-                    <span>T: Theme</span>
+                    <span>S+T: Theme</span>
                     <span>U: Lang</span>
                 </motion.div>
             </motion.nav>
