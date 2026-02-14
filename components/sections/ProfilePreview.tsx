@@ -75,20 +75,31 @@ export default function ProfilePreview() {
 
     return (
         <section id="profile" className="relative min-h-screen bg-transparent overflow-hidden">
+            {/* Background: Heavy Iridescence on Desktop, Simple Gradient on Mobile */}
             <div className="absolute inset-0 z-0">
-                <Iridescence color={[0.1, 0.1, 0.1]} mouseReact={true} amplitude={0.1} speed={1.0} />
+                {!isMobile ? (
+                    <Iridescence color={[0.1, 0.1, 0.1]} mouseReact={true} amplitude={0.1} speed={1.0} />
+                ) : (
+                    <div className="w-full h-full bg-gradient-to-b from-zinc-900 to-black" />
+                )}
             </div>
 
-            {/* Lanyard positioned relative to this section */}
-            {/* z-index 5 to be above background, below text. pointer-events-auto to allow dragging */}
-            <div className="absolute inset-0 z-10 pointer-events-auto">
-                <Lanyard
-                    position={lanyardProps.position}
-                    gravity={lanyardProps.gravity}
-                    anchorPosition={lanyardProps.anchorPosition}
-                    textureUrl={profile.lanyard_texture_url || '/lanyard/lanyard.png'}
-                />
-            </div>
+            {/* Lanyard: Only render on Desktop to save massive resources */}
+            {!isMobile && (
+                <div className="absolute inset-0 z-10 pointer-events-auto">
+                    <Lanyard
+                        position={lanyardProps.position}
+                        gravity={lanyardProps.gravity}
+                        anchorPosition={lanyardProps.anchorPosition}
+                        textureUrl={profile.lanyard_texture_url || '/lanyard/lanyard.png'}
+                    />
+                </div>
+            )}
+
+            {/* Mobile Fallback visual (Optional) or just clean styling */}
+            {isMobile && (
+                <div className="absolute inset-0 z-10 pointer-events-none opacity-20 bg-[url('/noise.png')] opacity-10" />
+            )}
 
             {/* Main content wrapper - pointer-events-none to let clicks pass through to Lanyard in empty spaces */}
             <div className="w-full h-full flex flex-col justify-center px-6 md:px-20 relative z-20 pointer-events-none">
