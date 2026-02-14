@@ -47,7 +47,7 @@ const RippleGrid: React.FC<Props> = ({
     };
 
     const renderer = new Renderer({
-      dpr: Math.min(window.devicePixelRatio, 2),
+      dpr: window.innerWidth < 768 ? 1 : Math.min(window.devicePixelRatio, 1.5),
       alpha: true
     });
     const gl = renderer.gl;

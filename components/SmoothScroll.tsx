@@ -4,6 +4,11 @@ import { useEffect } from 'react';
 import Lenis from 'lenis';
 
 export default function SmoothScroll({ children }: { children: React.ReactNode }) {
+  // Friend suggestion: "jangan pake scroll animasi" (don't use scroll animation)
+  // Returning children directly disables Lenis globally.
+  return <>{children}</>;
+
+  /* 
   useEffect(() => {
     const isMobile = window.innerWidth < 768; // Simple check
     if (isMobile) return;
@@ -27,4 +32,5 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
   }, []);
 
   return <>{children}</>;
+  */
 }

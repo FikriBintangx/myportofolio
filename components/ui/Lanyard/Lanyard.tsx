@@ -28,7 +28,8 @@ interface LanyardProps {
     gravity?: [number, number, number];
     fov?: number;
     transparent?: boolean;
-    textureUrl?: string; // Optional prop for texture
+    textureUrl?: string; // For the strap
+    cardTextureUrl?: string; // For the ID card
     anchorPosition?: [number, number, number]; // Optional prop for anchor position
 }
 
@@ -37,7 +38,8 @@ export default function Lanyard({
     gravity = [0, -40, 0],
     fov = 20,
     transparent = true,
-    textureUrl = lanyardTexture, // Default to lanyard texture
+    textureUrl = lanyardTexture, // Default to lanyard texture for strap
+    cardTextureUrl, // Optional user uploaded ID card
     anchorPosition = [0, 4, 0] // Default anchor
 }: LanyardProps) {
     const [isMobile, setIsMobile] = useState<boolean>(false);
@@ -54,13 +56,13 @@ export default function Lanyard({
         <div className="relative z-0 w-full h-screen flex justify-center items-center transform scale-100 origin-center">
             <Canvas
                 camera={{ position, fov }}
-                dpr={isMobile ? 1 : [1, 2]} // Force dpr 1 on mobile for performance
-                gl={{ alpha: transparent }}
+                dpr={isMobile ? 1 : Math.min(window.devicePixelRatio, 1.5)} // Cap desktop DPR at 1.5 for performance
+                gl={{ alpha: transparent, powerPreference: "high-performance" }}
                 onCreated={({ gl }) => gl.setClearColor(new THREE.Color(0x000000), transparent ? 0 : 0)}
             >
                 <ambientLight intensity={Math.PI} />
                 <Physics gravity={gravity as [number, number, number]} timeStep={1 / 60}>
-                    <Band isMobile={isMobile} textureUrl={textureUrl} anchorPosition={anchorPosition} />
+                    <Band isMobile={isMobile} textureUrl={textureUrl} cardTextureUrl={cardTextureUrl} anchorPosition={anchorPosition} />
                 </Physics>
                 <Environment blur={0.75}>
                     <Lightformer
@@ -101,11 +103,12 @@ interface BandProps {
     maxSpeed?: number;
     minSpeed?: number;
     isMobile?: boolean;
-    textureUrl?: string;
+    textureUrl?: string; // strap
+    cardTextureUrl?: string; // card
     anchorPosition?: [number, number, number];
 }
 
-function Band({ maxSpeed = 50, minSpeed = 0, isMobile = false, textureUrl = '/lanyard/lanyard.png', anchorPosition = [0, 4, 0] }: BandProps) {
+function Band({ maxSpeed = 50, minSpeed = 0, isMobile = false, textureUrl = '/lanyard/lanyard.png', cardTextureUrl, anchorPosition = [0, 4, 0] }: BandProps) {
     const band = useRef<any>(null);
     const fixed = useRef<any>(null);
     const j1 = useRef<any>(null);
@@ -127,7 +130,25 @@ function Band({ maxSpeed = 50, minSpeed = 0, isMobile = false, textureUrl = '/la
     };
 
     const { nodes, materials } = useGLTF(cardGLB) as any;
-    const texture = useTexture(textureUrl);
+    const texture = useTexture(textureUrl); // strap texture
+
+    // Load card texture if provided, fallback null
+    // We cannot conditionally call hook! But we can call it on potentially undefined URL?
+    // useTexture throws if url is bad.
+    // Safe approach: always call it with something, or rely on internal behavior.
+    // Better: useTexture(['/path']) returns array.
+    // Easiest: If no cardTextureUrl, we don't use this variable. 
+    // BUT hooks must be consistent.
+    // Solution: If cardTextureUrl is undefined, use a transparent 1x1 pixel or just re-use lanyard texture (unused).
+    // Actually, useTexture can take null? No.
+    // Let's use the defaultPhoto const as fallback for the hook, then conditionally apply.
+    const customCardTexture = useTexture(cardTextureUrl || defaultPhoto);
+    // If cardTextureUrl was not provided, we effectively loaded defaultPhoto.
+    // We will conditionally use `customCardTexture` in render if `cardTextureUrl` is truthy.
+
+    if (customCardTexture) {
+        customCardTexture.flipY = false; // GLTF standard
+    }
 
     // Create curve only on client or ensure consistency
     // @ts-ignore
@@ -221,7 +242,7 @@ function Band({ maxSpeed = 50, minSpeed = 0, isMobile = false, textureUrl = '/la
                     >
                         <mesh geometry={nodes.card.geometry}>
                             <meshPhysicalMaterial
-                                map={materials.base.map}
+                                map={cardTextureUrl ? customCardTexture : materials.base.map}
                                 map-anisotropy={16}
                                 clearcoat={isMobile ? 0 : 1}
                                 clearcoatRoughness={0.15}

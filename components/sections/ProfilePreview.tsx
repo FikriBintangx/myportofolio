@@ -91,7 +91,7 @@ export default function ProfilePreview() {
                         position={lanyardProps.position}
                         gravity={lanyardProps.gravity}
                         anchorPosition={lanyardProps.anchorPosition}
-                        textureUrl={profile.lanyard_texture_url || '/lanyard/lanyard.png'}
+                        cardTextureUrl={profile.lanyard_texture_url} // Correct prop for card image
                     />
                 </div>
             )}
