@@ -18,8 +18,8 @@ import * as THREE from 'three';
 // Assets
 const cardGLB = '/lanyard/card.glb';
 const lanyardTexture = '/lanyard/lanyard.png'; // Default texture
-// You can put your custom photo in /public/lanyard/photos/ and change the path below or pass it as prop
-const defaultPhoto = '/lanyard/photos/my-photo.png';
+// Fallback to lanyard texture if no custom photo is provided to avoid hook errors
+const defaultPhoto = '/lanyard/lanyard.png';
 
 extend({ MeshLineGeometry, MeshLineMaterial });
 
