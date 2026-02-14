@@ -4,12 +4,14 @@ import { motion } from 'framer-motion';
 import TiltCard from '../ui/TiltCard';
 import RippleGrid from '@/components/ui/RippleGrid/RippleGrid';
 import SectionReveal from '@/components/ui/SectionReveal';
+import ThumbnailGrid from '@/components/ui/ThumbnailGrid/ThumbnailGrid';
 
 interface Project {
     id: string;
     title: string;
     description: string;
-    thumbnail_url: string;
+    thumbnail_url: string; // Keep for backward compatibility or primary
+    thumbnails?: string[]; // New field for multiple images
     project_date: string;
     category: string;
     link: string;
@@ -34,7 +36,13 @@ export default function Projects() {
                 .order('order', { ascending: true });
 
             if (data && !error) {
-                setProjects(data);
+                // Parse thumbnail_url or check for multiple images
+                // Assuming user might enter comma-separated URLs in the single text field for now if no array column exists
+                const projectsWithParsedImages = data.map((p: any) => ({
+                    ...p,
+                    thumbnails: p.thumbnail_url ? p.thumbnail_url.split(',').map((url: string) => url.trim()) : []
+                }));
+                setProjects(projectsWithParsedImages);
             }
             setIsLoading(false);
         };
@@ -80,14 +88,13 @@ export default function Projects() {
                             >
                                 <TiltCard>
                                     <div className="group relative aspect-[4/5] bg-zinc-900 rounded-2xl overflow-hidden mb-8">
-                                        <motion.img
-                                            src={project.thumbnail_url}
-                                            alt={project.title}
-                                            whileHover={{ scale: 1.05 }}
-                                            transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
-                                            className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity"
-                                        />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent flex flex-col justify-end p-8">
+                                        <div className="absolute inset-0 w-full h-full">
+                                            <ThumbnailGrid
+                                                images={project.thumbnails && project.thumbnails.length > 0 ? project.thumbnails : [project.thumbnail_url]}
+                                                alt={project.title}
+                                            />
+                                        </div>
+                                        <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/40 to-transparent flex flex-col justify-end p-8 pointer-events-none">
                                             <div className="text-[10px] uppercase tracking-widest text-foreground/50 mb-2">{project.category}</div>
                                             <h3 className="text-3xl font-bold text-foreground tracking-tighter">{project.title}</h3>
                                         </div>
