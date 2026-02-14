@@ -2,7 +2,9 @@
 
 import { motion } from 'framer-motion';
 import RevealText from '../ui/RevealText';
-import { AuroraBackground } from '../ui/AuroraBackground';
+import Iridescence from '@/components/ui/Iridescence/Iridescence';
+import Lanyard from '@/components/ui/Lanyard/Lanyard';
+import SectionReveal from '@/components/ui/SectionReveal';
 import { createClient } from '@/lib/supabase/client'; // Use client for now due to animation context or switch to server component passing props
 import { useEffect, useState } from 'react';
 import { useApp } from '@/context/AppContext';
@@ -52,33 +54,24 @@ export default function ProfilePreview() {
 
     return (
         <section id="profile" className="relative min-h-screen bg-transparent overflow-hidden">
-            <AuroraBackground className="absolute inset-0 z-0 !bg-transparent" showRadialGradient={true}>
-                {/* Content goes here but AuroraBackground renders its children. 
-                     Wait, AuroraBackground logic seems to be designed to wrap the whole page body or main tag often. 
-                     Let's check the AuroraBackground code again.
-                     It sets absolute inset-0.
-                     
-                     If I wrap the content in AuroraBackground, it will centre it by default because of flex col items-center justify-center in AuroraBackground.
-                     ProfilePreview content structure in existing code:
-                     <section ... flex flex-col justify-center px-6 md:px-20 relative ...>
-                        ... content ...
-                     </section>
-                     
-                     If I use AuroraBackground, it provides the background.
-                     I should probably place AuroraBackground as a background element or warp the content. 
-                     Let's look at AuroraBackground again. It has `children` so it's a wrapper.
-                     
-                     Revised approach: Wrap the existing content div within AuroraBackground?
-                     Or just replace the SECTION with AuroraBackground? 
-                     AuroraBackground has `main` tag which might be semantically wrong if inside another main but fine for section replacement effectively.
-                     However, the existing section has specific padding and layout.
-                     AuroraBackground has `flex flex-col items-center justify-center`.
-                     
-                     Let's adapt ProfilePreview to use AuroraBackground as the container.
-                 */}
-                <div className="w-full h-full flex flex-col justify-center px-6 md:px-20 relative z-10">
-                    {/* Left side: Text content */}
-                    <div className="max-w-4xl pointer-events-auto">
+            <div className="absolute inset-0 z-0">
+                <Iridescence color={[0.1, 0.1, 0.1]} mouseReact={true} amplitude={0.1} speed={1.0} />
+            </div>
+
+            {/* Lanyard positioned relative to this section */}
+            {/* z-index 5 to be above background, below text. pointer-events-auto to allow dragging */}
+            <div className="absolute inset-0 z-10">
+                {/* Reset camera to center [0, 0, 30] */}
+                {/* X=4 moves it to the right (screen edge is approx 5-6 at this distance) */}
+                {/* Y=6 moves anchor up so string hangs from top */}
+                <Lanyard position={[0, 0, 30]} gravity={[0, -40, 0]} anchorPosition={[4, 6, 0]} />
+            </div>
+
+            {/* Main content wrapper - pointer-events-none to let clicks pass through to Lanyard in empty spaces */}
+            <div className="w-full h-full flex flex-col justify-center px-6 md:px-20 relative z-20 pointer-events-none">
+                {/* Left side: Text content - pointer-events-auto to allow text selection/interaction */}
+                <div className="max-w-2xl pointer-events-auto">
+                    <SectionReveal delay={0.3}>
                         <motion.div
                             initial={{ opacity: 0, x: -20 }}
                             whileInView={{ opacity: 1, x: 0 }}
@@ -112,9 +105,10 @@ export default function ProfilePreview() {
                                 <div className="text-sm text-foreground/80 dark:text-foreground/80 light:text-black/80">{profile.location}</div>
                             </div>
                         </div>
-                    </div>
+                    </SectionReveal>
                 </div>
-            </AuroraBackground>
+            </div>
+
 
             <motion.div
                 animate={{ y: [0, 10, 0] }}

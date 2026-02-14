@@ -12,7 +12,9 @@ import Experience from "@/components/sections/Experience"; // Added import
 import CustomCursor from "@/components/ui/CustomCursor";
 import MagneticButton from "@/components/ui/MagneticButton";
 import ScrollProgress from "@/components/ui/ScrollProgress";
-import Lanyard from "@/components/ui/Lanyard/Lanyard";
+
+import LiquidChrome from "@/components/ui/LiquidChrome/LiquidChrome";
+import SectionReveal from "@/components/ui/SectionReveal";
 
 export default function Home() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -48,10 +50,7 @@ export default function Home() {
           <ScrollProgress />
           <div className="bg-noise opacity-[0.03] scale-150"></div>
 
-          {/* Lanyard - Fixed at top, full viewport */}
-          <div className="fixed top-0 left-0 w-full h-screen z-50 pointer-events-none">
-            <Lanyard position={[0, 0, 24]} gravity={[0, -40, 0]} />
-          </div>
+
 
           <Navbar />
 
@@ -68,24 +67,29 @@ export default function Home() {
 
             {/* Final Contact Section */}
             <section id="contact" className="min-h-screen bg-background flex flex-col items-center justify-center px-6 relative overflow-hidden border-t border-foreground/5">
-              <div className="absolute inset-0 bg-gradient-to-t from-foreground/[0.02] to-transparent pointer-events-none" />
+              <div className="absolute inset-0 z-0 opacity-40">
+                <LiquidChrome baseColor={[0.05, 0.05, 0.05]} speed={0.4} amplitude={0.3} interactive={true} />
+              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-foreground/[0.02] to-transparent pointer-events-none z-10" />
 
-              <h2 className="text-5xl md:text-9xl font-bold tracking-tighter text-center mb-16 leading-[0.85] text-foreground">
-                Let’s build <br />
-                <span className="text-foreground/20 italic">something</span> <br />
-                meaningful.
-              </h2>
+              <SectionReveal className="relative z-20 flex flex-col items-center">
+                <h2 className="text-5xl md:text-9xl font-bold tracking-tighter text-center mb-16 leading-[0.85] text-foreground">
+                  Let’s build <br />
+                  <span className="text-foreground/20 italic">something</span> <br />
+                  meaningful.
+                </h2>
 
-              <a
-                href={whatsapp ? `https://wa.me/${whatsapp}` : '#contact'}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <MagneticButton className="group relative px-12 py-5 bg-foreground text-background text-xs uppercase tracking-[0.4em] font-bold rounded-full hover:scale-105 transition-transform">
-                  Get in Touch
-                  <div className="absolute inset-0 rounded-full bg-foreground blur-xl opacity-0 group-hover:opacity-30 transition-opacity" />
-                </MagneticButton>
-              </a>
+                <a
+                  href={whatsapp ? `https://wa.me/${whatsapp}` : '#contact'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <MagneticButton className="group relative px-12 py-5 bg-foreground text-background text-xs uppercase tracking-[0.4em] font-bold rounded-full hover:scale-105 transition-transform">
+                    Get in Touch
+                    <div className="absolute inset-0 rounded-full bg-foreground blur-xl opacity-0 group-hover:opacity-30 transition-opacity" />
+                  </MagneticButton>
+                </a>
+              </SectionReveal>
 
               <footer className="absolute bottom-10 left-0 w-full px-10 flex justify-between items-center text-[10px] uppercase tracking-widest text-foreground/20 font-mono">
                 <p>© 2026 IS4GI.dev</p>

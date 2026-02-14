@@ -3,31 +3,23 @@
 import { useEffect, useRef, useState } from 'react';
 import { Canvas, extend, useFrame } from '@react-three/fiber';
 import { useGLTF, useTexture, Environment, Lightformer } from '@react-three/drei';
-import { BallCollider, CuboidCollider, Physics, RigidBody, useRopeJoint, useSphericalJoint, RigidBodyProps } from '@react-three/rapier';
+import {
+    BallCollider,
+    CuboidCollider,
+    Physics,
+    RigidBody,
+    useRopeJoint,
+    useSphericalJoint,
+    RigidBodyProps
+} from '@react-three/rapier';
 import { MeshLineGeometry, MeshLineMaterial } from 'meshline';
 import * as THREE from 'three';
 
-// Import assets from relative path (Next.js might require these to be in public or handled by loader)
-// Since we set up declarations, this should pass TS check, but runtime import might need adjustment depending on next.config.
-// However, standard Next.js with file-loader or asset handling usually works for imports if configured.
-// For now we use the paths provided. User must ensure next.config.js handles .glb if not standard.
-// IMPORTANT: Uncomment this line after you add the real card.glb file
-// import cardGLB from './card.glb';
-// For now, we'll use a placeholder URL or skip the model
-const cardGLB = '/placeholder-card.glb'; // This will fail gracefully until you add the real file
-import lanyard from './lanyard.png';
-
-import './Lanyard.css';
-
-// Type declarations for MeshLine
-declare global {
-    namespace JSX {
-        interface IntrinsicElements {
-            meshLineGeometry: any;
-            meshLineMaterial: any;
-        }
-    }
-}
+// Assets
+const cardGLB = '/lanyard/card.glb';
+const lanyardTexture = '/lanyard/lanyard.png'; // Default texture
+// You can put your custom photo in /public/lanyard/photos/ and change the path below or pass it as prop
+const defaultPhoto = '/lanyard/photos/my-photo.png';
 
 extend({ MeshLineGeometry, MeshLineMaterial });
 
@@ -36,40 +28,39 @@ interface LanyardProps {
     gravity?: [number, number, number];
     fov?: number;
     transparent?: boolean;
+    textureUrl?: string; // Optional prop for texture
+    anchorPosition?: [number, number, number]; // Optional prop for anchor position
 }
 
-export default function Lanyard({ position = [0, 0, 30], gravity = [0, -40, 0], fov = 20, transparent = true }: LanyardProps) {
-    const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth < 768);
-    const [isClient, setIsClient] = useState(false);
+export default function Lanyard({
+    position = [0, 0, 30],
+    gravity = [0, -40, 0],
+    fov = 20,
+    transparent = true,
+    textureUrl = lanyardTexture, // Default to lanyard texture
+    anchorPosition = [0, 4, 0] // Default anchor
+}: LanyardProps) {
+    const [isMobile, setIsMobile] = useState<boolean>(false);
 
     useEffect(() => {
-        // Only render on client side to avoid SSR issues with WebGL
-        setIsClient(true);
-        const handleResize = () => setIsMobile(window.innerWidth < 768);
+        // Check window only after mount to avoid hydration mismatch
+        setIsMobile(window.innerWidth < 768);
+        const handleResize = (): void => setIsMobile(window.innerWidth < 768);
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    // Don't render Canvas on server to prevent WebGL errors
-    if (!isClient) {
-        return <div className="lanyard-wrapper" style={{ minHeight: '100vh' }} />;
-    }
-
     return (
-        <div className="lanyard-wrapper pointer-events-none">
-            {/* pointer-events-none on wrapper to let clicks pass through hard transparent areas if needed, 
-           but Canvas needs pointer-events-auto for dragging. 
-           We will handle this in Canvas or inner elements. */}
+        <div className="relative z-0 w-full h-screen flex justify-center items-center transform scale-100 origin-center">
             <Canvas
-                className="pointer-events-auto"
-                camera={{ position: position, fov: fov }}
-                dpr={[1, isMobile ? 1.5 : 2]}
+                camera={{ position, fov }}
+                dpr={[1, 2]} // Simplified dpr for consistency
                 gl={{ alpha: transparent }}
-                onCreated={({ gl }) => gl.setClearColor(new THREE.Color(0x000000), transparent ? 0 : 1)}
+                onCreated={({ gl }) => gl.setClearColor(new THREE.Color(0x000000), transparent ? 0 : 0)}
             >
                 <ambientLight intensity={Math.PI} />
-                <Physics gravity={gravity as [number, number, number]} timeStep={isMobile ? 1 / 30 : 1 / 60}>
-                    <Band isMobile={isMobile} />
+                <Physics gravity={gravity as [number, number, number]} timeStep={1 / 60}>
+                    <Band isMobile={isMobile} textureUrl={textureUrl} anchorPosition={anchorPosition} />
                 </Physics>
                 <Environment blur={0.75}>
                     <Lightformer
@@ -106,7 +97,15 @@ export default function Lanyard({ position = [0, 0, 30], gravity = [0, -40, 0], 
     );
 }
 
-function Band({ maxSpeed = 50, minSpeed = 0, isMobile = false }) {
+interface BandProps {
+    maxSpeed?: number;
+    minSpeed?: number;
+    isMobile?: boolean;
+    textureUrl?: string;
+    anchorPosition?: [number, number, number];
+}
+
+function Band({ maxSpeed = 50, minSpeed = 0, isMobile = false, textureUrl = '/lanyard/lanyard.png', anchorPosition = [0, 4, 0] }: BandProps) {
     const band = useRef<any>(null);
     const fixed = useRef<any>(null);
     const j1 = useRef<any>(null);
@@ -114,34 +113,27 @@ function Band({ maxSpeed = 50, minSpeed = 0, isMobile = false }) {
     const j3 = useRef<any>(null);
     const card = useRef<any>(null);
 
-    // Reuse vectors
-    const [vec] = useState(() => new THREE.Vector3());
-    const [ang] = useState(() => new THREE.Vector3());
-    const [rot] = useState(() => new THREE.Vector3());
-    const [dir] = useState(() => new THREE.Vector3());
+    const vec = new THREE.Vector3();
+    const ang = new THREE.Vector3();
+    const rot = new THREE.Vector3();
+    const dir = new THREE.Vector3();
 
-    const segmentProps: RigidBodyProps = { type: 'dynamic', canSleep: true, colliders: false, angularDamping: 4, linearDamping: 4 };
+    const segmentProps: any = {
+        type: 'dynamic' as RigidBodyProps['type'],
+        canSleep: true,
+        colliders: false,
+        angularDamping: 4,
+        linearDamping: 4
+    };
 
-    // Try to load GLTF, fallback to null if not available
-    let nodes: any = null;
-    let materials: any = null;
-    try {
-        // @ts-ignore - GLTF result type
-        const gltf = useGLTF(cardGLB);
-        nodes = gltf.nodes;
-        materials = gltf.materials;
-    } catch (error) {
-        console.warn('Card GLB not loaded. Please add card.glb file. Using fallback geometry.');
-    }
+    const { nodes, materials } = useGLTF(cardGLB) as any;
+    const texture = useTexture(textureUrl);
 
+    // Create curve only on client or ensure consistency
+    // @ts-ignore
+    const [curve] = useState(() => new THREE.CatmullRomCurve3([new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()]));
 
-    const texture = useTexture(typeof lanyard === 'string' ? lanyard : lanyard.src);
-
-    const [curve] = useState(
-        () =>
-            new THREE.CatmullRomCurve3([new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()])
-    );
-    const [dragged, drag] = useState<THREE.Vector3 | false>(false);
+    const [dragged, drag] = useState<false | THREE.Vector3>(false);
     const [hovered, hover] = useState(false);
 
     useRopeJoint(fixed, j1, [[0, 0, 0], [0, 0, 0], 1]);
@@ -149,13 +141,15 @@ function Band({ maxSpeed = 50, minSpeed = 0, isMobile = false }) {
     useRopeJoint(j2, j3, [[0, 0, 0], [0, 0, 0], 1]);
     useSphericalJoint(j3, card, [
         [0, 0, 0],
-        [0, 1.5, 0]
+        [0, 1.45, 0]
     ]);
 
     useEffect(() => {
         if (hovered) {
             document.body.style.cursor = dragged ? 'grabbing' : 'grab';
-            return () => { document.body.style.cursor = 'auto'; };
+            return () => {
+                document.body.style.cursor = 'auto';
+            };
         }
     }, [hovered, dragged]);
 
@@ -165,7 +159,11 @@ function Band({ maxSpeed = 50, minSpeed = 0, isMobile = false }) {
             dir.copy(vec).sub(state.camera.position).normalize();
             vec.add(dir.multiplyScalar(state.camera.position.length()));
             [card, j1, j2, j3, fixed].forEach(ref => ref.current?.wakeUp());
-            card.current?.setNextKinematicTranslation({ x: vec.x - dragged.x, y: vec.y - dragged.y, z: vec.z - dragged.z });
+            card.current?.setNextKinematicTranslation({
+                x: vec.x - dragged.x,
+                y: vec.y - dragged.y,
+                z: vec.z - dragged.z
+            });
         }
         if (fixed.current) {
             [j1, j2].forEach(ref => {
@@ -189,58 +187,50 @@ function Band({ maxSpeed = 50, minSpeed = 0, isMobile = false }) {
 
     return (
         <>
-            <group position={[0, 4, 0]}>
-                <RigidBody ref={fixed} {...segmentProps} type="fixed" />
-                <RigidBody position={[0.5, 0, 0]} ref={j1} {...segmentProps}>
+            <group position={anchorPosition}>
+                <RigidBody ref={fixed} {...segmentProps} type={'fixed' as RigidBodyProps['type']} />
+                <RigidBody position={[0.5, 0, 0]} ref={j1} {...segmentProps} type={'dynamic' as RigidBodyProps['type']}>
                     <BallCollider args={[0.1]} />
                 </RigidBody>
-                <RigidBody position={[1, 0, 0]} ref={j2} {...segmentProps}>
+                <RigidBody position={[1, 0, 0]} ref={j2} {...segmentProps} type={'dynamic' as RigidBodyProps['type']}>
                     <BallCollider args={[0.1]} />
                 </RigidBody>
-                <RigidBody position={[1.5, 0, 0]} ref={j3} {...segmentProps}>
+                <RigidBody position={[1.5, 0, 0]} ref={j3} {...segmentProps} type={'dynamic' as RigidBodyProps['type']}>
                     <BallCollider args={[0.1]} />
                 </RigidBody>
-                <RigidBody position={[2, 0, 0]} ref={card} {...segmentProps} type={dragged ? 'kinematicPosition' : 'dynamic'}>
+                <RigidBody
+                    position={[2, 0, 0]}
+                    ref={card}
+                    {...segmentProps}
+                    type={dragged ? ('kinematicPosition' as RigidBodyProps['type']) : ('dynamic' as RigidBodyProps['type'])}
+                >
                     <CuboidCollider args={[0.8, 1.125, 0.01]} />
                     <group
                         scale={2.25}
                         position={[0, -1.2, -0.05]}
                         onPointerOver={() => hover(true)}
                         onPointerOut={() => hover(false)}
-                        onPointerUp={(e: any) => (e.target.releasePointerCapture(e.pointerId), drag(false))}
-                        onPointerDown={(e: any) => (
-                            e.target.setPointerCapture(e.pointerId),
-                            drag(new THREE.Vector3().copy(e.point).sub(vec.copy(card.current.translation())))
-                        )}
+                        onPointerUp={(e: any) => {
+                            e.target.releasePointerCapture(e.pointerId);
+                            drag(false);
+                        }}
+                        onPointerDown={(e: any) => {
+                            e.target.setPointerCapture(e.pointerId);
+                            drag(new THREE.Vector3().copy(e.point).sub(vec.copy(card.current.translation())));
+                        }}
                     >
-                        {nodes && materials ? (
-                            <>
-                                <mesh geometry={nodes.card.geometry}>
-                                    <meshPhysicalMaterial
-                                        map={materials.base.map}
-                                        map-anisotropy={16}
-                                        clearcoat={isMobile ? 0 : 1}
-                                        clearcoatRoughness={0.15}
-                                        roughness={0.9}
-                                        metalness={0.8}
-                                    />
-                                </mesh>
-                                <mesh geometry={nodes.clip.geometry} material={materials.metal} material-roughness={0.3} />
-                                <mesh geometry={nodes.clamp.geometry} material={materials.metal} />
-                            </>
-                        ) : (
-                            // Fallback: Simple card geometry
-                            <mesh>
-                                <boxGeometry args={[1.6, 2.25, 0.02]} />
-                                <meshPhysicalMaterial
-                                    color="#ffffff"
-                                    clearcoat={isMobile ? 0 : 1}
-                                    clearcoatRoughness={0.15}
-                                    roughness={0.3}
-                                    metalness={0.8}
-                                />
-                            </mesh>
-                        )}
+                        <mesh geometry={nodes.card.geometry}>
+                            <meshPhysicalMaterial
+                                map={materials.base.map}
+                                map-anisotropy={16}
+                                clearcoat={isMobile ? 0 : 1}
+                                clearcoatRoughness={0.15}
+                                roughness={0.9}
+                                metalness={0.8}
+                            />
+                        </mesh>
+                        <mesh geometry={nodes.clip.geometry} material={materials.metal} material-roughness={0.3} />
+                        <mesh geometry={nodes.clamp.geometry} material={materials.metal} />
                     </group>
                 </RigidBody>
             </group>
