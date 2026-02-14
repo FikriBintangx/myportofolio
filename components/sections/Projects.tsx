@@ -59,7 +59,7 @@ export default function Projects() {
     if (projects.length === 0) return null;
 
     return (
-        <section id="projects" className="bg-background py-40 px-6 md:px-20 relative overflow-hidden">
+        <section id="projects" className="bg-background py-20 md:py-40 px-6 md:px-20 relative overflow-hidden">
             <div className="absolute inset-0 z-0 opacity-40">
                 <RippleGrid />
             </div>

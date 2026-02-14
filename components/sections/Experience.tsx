@@ -36,7 +36,7 @@ const experience = [
 
 export default function Experience() {
     return (
-        <section id="experience" className="bg-background py-40 px-6 md:px-20 border-t border-foreground/5 relative overflow-hidden">
+        <section id="experience" className="bg-background py-20 md:py-40 px-6 md:px-20 border-t border-foreground/5 relative overflow-hidden">
             <div className="absolute inset-0 z-0 opacity-30">
                 <ColorBends />
             </div>

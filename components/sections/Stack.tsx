@@ -27,7 +27,7 @@ const stack: StackItem[] = [
 
 export default function Stack() {
     return (
-        <section id="stack" className="bg-background py-40 overflow-hidden border-t border-foreground/5 relative">
+        <section id="stack" className="bg-background py-20 md:py-40 overflow-hidden border-t border-foreground/5 relative">
             <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-background via-transparent to-background z-10" />
 
             <SectionReveal>

@@ -39,7 +39,7 @@ export default function GearList() {
     if (gear.length === 0) return null;
 
     return (
-        <section id="gear" className="bg-background py-40 px-6 md:px-20 border-t border-foreground/5">
+        <section id="gear" className="bg-background py-20 md:py-40 px-6 md:px-20 border-t border-foreground/5">
             <div className="max-w-7xl mx-auto">
                 <SectionReveal>
                     <div className="text-center mb-24">

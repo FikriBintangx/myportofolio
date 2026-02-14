@@ -52,6 +52,26 @@ export default function ProfilePreview() {
         fetchProfile();
     }, []);
 
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth < 768);
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
+
+    // Helper to determine Lanyard props based on screen size
+    const lanyardProps = isMobile ? {
+        position: [0, 0, 35] as [number, number, number], // Further away on mobile
+        anchorPosition: [2, 6, 0] as [number, number, number], // Slightly right but closer to center
+        gravity: [0, -40, 0] as [number, number, number]
+    } : {
+        position: [0, 0, 30] as [number, number, number],
+        anchorPosition: [4, 6, 0] as [number, number, number],
+        gravity: [0, -40, 0] as [number, number, number]
+    };
+
     return (
         <section id="profile" className="relative min-h-screen bg-transparent overflow-hidden">
             <div className="absolute inset-0 z-0">
@@ -60,11 +80,12 @@ export default function ProfilePreview() {
 
             {/* Lanyard positioned relative to this section */}
             {/* z-index 5 to be above background, below text. pointer-events-auto to allow dragging */}
-            <div className="absolute inset-0 z-10">
-                {/* Reset camera to center [0, 0, 30] */}
-                {/* X=4 moves it to the right (screen edge is approx 5-6 at this distance) */}
-                {/* Y=6 moves anchor up so string hangs from top */}
-                <Lanyard position={[0, 0, 30]} gravity={[0, -40, 0]} anchorPosition={[4, 6, 0]} />
+            <div className="absolute inset-0 z-10 pointer-events-auto">
+                <Lanyard
+                    position={lanyardProps.position}
+                    gravity={lanyardProps.gravity}
+                    anchorPosition={lanyardProps.anchorPosition}
+                />
             </div>
 
             {/* Main content wrapper - pointer-events-none to let clicks pass through to Lanyard in empty spaces */}
