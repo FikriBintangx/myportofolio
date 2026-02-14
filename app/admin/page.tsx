@@ -160,31 +160,58 @@ export default function AdminDashboard() {
         }
     };
 
-    const handleProjectImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, isThumbnail: boolean = true) => {
+    const handleProjectImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files || e.target.files.length === 0) return;
-        const file = e.target.files[0];
-        const fileExt = file.name.split('.').pop();
-        const fileName = `${Math.random()}.${fileExt}`;
-        const filePath = `project-images/${fileName}`;
 
-        const { error: uploadError } = await supabase.storage.from('documents').upload(filePath, file);
+        // Handle multiple files if selected, effectively just processing the first one for now as logic is per-file upload usually 
+        // but let's loop if user selects multiple
+        const files = Array.from(e.target.files);
+        const newUrls: string[] = [];
 
-        if (uploadError) {
-            alert(uploadError.message);
-            return;
+        for (const file of files) {
+            const fileExt = file.name.split('.').pop();
+            const fileName = `${Math.random()}.${fileExt}`;
+            const filePath = `project-images/${fileName}`;
+
+            const { error: uploadError } = await supabase.storage.from('documents').upload(filePath, file);
+
+            if (uploadError) {
+                alert(`Error uploading ${file.name}: ${uploadError.message}`);
+                continue;
+            }
+
+            const { data: { publicUrl } } = supabase.storage.from('documents').getPublicUrl(filePath);
+            newUrls.push(publicUrl);
         }
 
-        const { data: { publicUrl } } = supabase.storage.from('documents').getPublicUrl(filePath);
+        if (newUrls.length === 0) return;
 
-        if (isThumbnail) {
-            if (editingProject) setEditingProject({ ...editingProject, thumbnail_url: publicUrl });
-            else if (isAddingProject) setAddingProjectData({ ...addingProjectData, thumbnail_url: publicUrl });
-        } else {
-            // Append to image_urls
-            if (editingProject) {
-                const urls = [...(editingProject.image_urls || []), publicUrl];
-                setEditingProject({ ...editingProject, image_urls: urls });
-            }
+        // Helper to append URLs
+        const updateState = (prevState: Project) => {
+            const currentUrls = prevState.thumbnail_url ? prevState.thumbnail_url.split(',').map(u => u.trim()).filter(Boolean) : [];
+            const combined = [...currentUrls, ...newUrls];
+            // Limit to 4 if strictly needed, but flexible is better.
+            return { ...prevState, thumbnail_url: combined.join(',') };
+        };
+
+        if (editingProject) {
+            setEditingProject(updateState(editingProject));
+        } else if (isAddingProject) {
+            setAddingProjectData(updateState(addingProjectData));
+        }
+    };
+
+    const removeProjectImage = (indexToRemove: number) => {
+        const updateState = (prevState: Project) => {
+            const currentUrls = prevState.thumbnail_url ? prevState.thumbnail_url.split(',').map(u => u.trim()).filter(Boolean) : [];
+            const filtered = currentUrls.filter((_, idx) => idx !== indexToRemove);
+            return { ...prevState, thumbnail_url: filtered.join(',') };
+        };
+
+        if (editingProject) {
+            setEditingProject(updateState(editingProject));
+        } else if (isAddingProject) {
+            setAddingProjectData(updateState(addingProjectData));
         }
     };
     const [isUploadingSequence, setIsUploadingSequence] = useState(false);
@@ -463,7 +490,7 @@ export default function AdminDashboard() {
                                     <div key={project.id} className="bg-zinc-900 border border-white/5 rounded-2xl overflow-hidden group">
                                         <div className="aspect-video bg-zinc-800 relative">
                                             {project.thumbnail_url ? (
-                                                <img src={project.thumbnail_url} alt={project.title} className="w-full h-full object-cover" />
+                                                <img src={project.thumbnail_url.split(',')[0].trim()} alt={project.title} className="w-full h-full object-cover" />
                                             ) : (
                                                 <div className="w-full h-full flex items-center justify-center text-white/20">No Thumbnail</div>
                                             )}
@@ -525,41 +552,63 @@ export default function AdminDashboard() {
 
                                     <div className="space-y-6">
                                         <div>
-                                            <label className="block text-xs uppercase tracking-widest text-white/40 mb-2">Thumbnail</label>
-                                            <div className="aspect-video bg-black border border-white/10 rounded-xl overflow-hidden relative group">
-                                                {(editingProject?.thumbnail_url || addingProjectData.thumbnail_url) ? (
-                                                    <img src={editingProject ? editingProject.thumbnail_url : addingProjectData.thumbnail_url} className="w-full h-full object-cover" />
-                                                ) : (
-                                                    <div className="w-full h-full flex items-center justify-center text-white/20">
-                                                        <ImageIcon size={40} />
-                                                    </div>
-                                                )}
-                                                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                                                    <label className="cursor-pointer bg-white text-black px-4 py-2 rounded-lg font-bold text-sm">
-                                                        Upload Image
-                                                        <input type="file" onChange={(e) => handleProjectImageUpload(e, true)} className="hidden" accept="image/*" />
+                                            <div>
+                                                <label className="block text-xs uppercase tracking-widest text-white/40 mb-2">Project Images (Max 4 recommended)</label>
+
+                                                {/* Image Grid */}
+                                                <div className="grid grid-cols-2 gap-4 mb-4">
+                                                    {((editingProject ? editingProject.thumbnail_url : addingProjectData.thumbnail_url) || '').split(',').map((url, idx) => {
+                                                        const cleanUrl = url.trim();
+                                                        if (!cleanUrl) return null;
+                                                        return (
+                                                            <div key={idx} className="aspect-video bg-black border border-white/10 rounded-xl overflow-hidden relative group">
+                                                                <img src={cleanUrl} className="w-full h-full object-cover" />
+                                                                <button
+                                                                    onClick={() => removeProjectImage(idx)}
+                                                                    className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                                                                >
+                                                                    <Trash2 size={14} />
+                                                                </button>
+                                                            </div>
+                                                        );
+                                                    })}
+
+                                                    {/* Upload Button */}
+                                                    <label className="aspect-video bg-black/40 border border-dashed border-white/20 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:bg-white/5 transition-colors group">
+                                                        <div className="bg-white/10 p-3 rounded-full mb-2 group-hover:scale-110 transition-transform">
+                                                            <Plus size={20} className="text-white/60" />
+                                                        </div>
+                                                        <span className="text-xs font-bold text-white/40 uppercase tracking-widest">Add Image</span>
+                                                        <input
+                                                            type="file"
+                                                            onChange={handleProjectImageUpload}
+                                                            className="hidden"
+                                                            accept="image/*"
+                                                            multiple
+                                                        />
                                                     </label>
                                                 </div>
+                                                <p className="text-[10px] text-white/30">First image is the main cover. Upload up to 3 for collage layout, 4+ for grid.</p>
                                             </div>
-                                        </div>
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <div>
-                                                <label className="block text-xs uppercase tracking-widest text-white/40 mb-2">Completion Date</label>
-                                                <input
-                                                    value={editingProject ? editingProject.project_date : addingProjectData.project_date}
-                                                    onChange={(e) => editingProject ? setEditingProject({ ...editingProject, project_date: e.target.value }) : setAddingProjectData({ ...addingProjectData, project_date: e.target.value })}
-                                                    placeholder="Feb 2024"
-                                                    className="w-full bg-black border border-white/10 rounded-xl p-4 focus:border-white/30"
-                                                />
-                                            </div>
-                                            <div>
-                                                <label className="block text-xs uppercase tracking-widest text-white/40 mb-2">External Link</label>
-                                                <input
-                                                    value={editingProject ? editingProject.link : addingProjectData.link}
-                                                    onChange={(e) => editingProject ? setEditingProject({ ...editingProject, link: e.target.value }) : setAddingProjectData({ ...addingProjectData, link: e.target.value })}
-                                                    placeholder="https://..."
-                                                    className="w-full bg-black border border-white/10 rounded-xl p-4 focus:border-white/30"
-                                                />
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <div>
+                                                    <label className="block text-xs uppercase tracking-widest text-white/40 mb-2">Completion Date</label>
+                                                    <input
+                                                        value={editingProject ? editingProject.project_date : addingProjectData.project_date}
+                                                        onChange={(e) => editingProject ? setEditingProject({ ...editingProject, project_date: e.target.value }) : setAddingProjectData({ ...addingProjectData, project_date: e.target.value })}
+                                                        placeholder="Feb 2024"
+                                                        className="w-full bg-black border border-white/10 rounded-xl p-4 focus:border-white/30"
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label className="block text-xs uppercase tracking-widest text-white/40 mb-2">External Link</label>
+                                                    <input
+                                                        value={editingProject ? editingProject.link : addingProjectData.link}
+                                                        onChange={(e) => editingProject ? setEditingProject({ ...editingProject, link: e.target.value }) : setAddingProjectData({ ...addingProjectData, link: e.target.value })}
+                                                        placeholder="https://..."
+                                                        className="w-full bg-black border border-white/10 rounded-xl p-4 focus:border-white/30"
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
