@@ -21,6 +21,7 @@ export default function AdminDashboard() {
         location: string;
         status: string;
         whatsapp: string;
+        lanyard_texture_url?: string;
     }
 
     // Profile Form State
@@ -31,7 +32,8 @@ export default function AdminDashboard() {
         bio: '',
         location: '',
         status: '',
-        whatsapp: ''
+        whatsapp: '',
+        lanyard_texture_url: ''
     });
 
     interface Project {
@@ -414,6 +416,49 @@ export default function AdminDashboard() {
                                         onChange={(e) => setProfile({ ...profile, status: e.target.value })}
                                         className="w-full bg-zinc-900 border border-white/10 rounded-lg p-4 focus:outline-none focus:border-white/50"
                                     />
+                                </div>
+                            </div>
+
+                            <div className="bg-zinc-900 border border-white/10 rounded-xl p-6">
+                                <label className="block text-xs uppercase tracking-widest text-white/40 mb-4">Lanyard Card (Custom Texture)</label>
+                                <div className="flex items-start gap-6">
+                                    <div className="w-24 h-32 bg-black border border-white/10 rounded-lg overflow-hidden flex items-center justify-center relative group">
+                                        {profile.lanyard_texture_url ? (
+                                            <img src={profile.lanyard_texture_url} alt="Lanyard Card" className="w-full h-full object-cover" />
+                                        ) : (
+                                            <ImageIcon size={24} className="text-white/20" />
+                                        )}
+                                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                                            <label className="cursor-pointer">
+                                                <input
+                                                    type="file"
+                                                    accept="image/*"
+                                                    className="hidden"
+                                                    onChange={async (e) => {
+                                                        if (!e.target.files || e.target.files.length === 0) return;
+                                                        const file = e.target.files[0];
+                                                        const fileExt = file.name.split('.').pop();
+                                                        const fileName = `lanyard_card_${Date.now()}.${fileExt}`;
+                                                        const { error } = await supabase.storage.from('documents').upload(`lanyard/${fileName}`, file);
+                                                        if (error) { alert(error.message); return; }
+                                                        const { data } = supabase.storage.from('documents').getPublicUrl(`lanyard/${fileName}`);
+                                                        if (data) setProfile({ ...profile, lanyard_texture_url: data.publicUrl });
+                                                    }}
+                                                />
+                                                <Plus size={20} className="text-white bg-white/20 rounded-full p-1" />
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div className="flex-1">
+                                        <p className="text-sm text-white/60 mb-2">Upload a custom image for the ID card in the 3D lanyard.</p>
+                                        <p className="text-[10px] text-white/30 uppercase tracking-widest">Recommended Ratio: 2:3 (Portrait)</p>
+                                        <input
+                                            value={profile.lanyard_texture_url || ''}
+                                            onChange={(e) => setProfile({ ...profile, lanyard_texture_url: e.target.value })}
+                                            placeholder="https://..."
+                                            className="w-full mt-3 bg-black border border-white/10 rounded px-3 py-2 text-xs focus:border-white/30"
+                                        />
+                                    </div>
                                 </div>
                             </div>
 

@@ -17,6 +17,7 @@ interface ProfileData {
     bio: string;
     location: string;
     status: string;
+    lanyard_texture_url?: string;
 }
 
 const defaultProfile: ProfileData = {
@@ -85,6 +86,7 @@ export default function ProfilePreview() {
                     position={lanyardProps.position}
                     gravity={lanyardProps.gravity}
                     anchorPosition={lanyardProps.anchorPosition}
+                    textureUrl={profile.lanyard_texture_url || '/lanyard/lanyard.png'}
                 />
             </div>
 
