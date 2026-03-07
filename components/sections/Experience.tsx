@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import ColorBends from '@/components/ui/ColorBends/ColorBends';
 import SectionReveal from '@/components/ui/SectionReveal';
+import { useApp } from '@/context/AppContext';
 
 const education = [
     {
@@ -35,10 +36,11 @@ const experience = [
 ];
 
 export default function Experience() {
+    const { theme } = useApp();
     return (
         <section id="experience" className="bg-background py-20 md:py-40 px-6 md:px-20 border-t border-foreground/5 relative overflow-hidden">
             <div className="absolute inset-0 z-0 opacity-30">
-                <ColorBends />
+                <ColorBends colors={theme === 'dark' ? [] : ['#ffffff', '#f0f0f0', '#e0e0e0']} />
             </div>
             <div className="max-w-4xl mx-auto relative z-10">
                 <SectionReveal>

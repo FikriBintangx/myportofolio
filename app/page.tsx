@@ -8,6 +8,7 @@ import ProfilePreview from "@/components/sections/ProfilePreview";
 import CustomCursor from "@/components/ui/CustomCursor";
 import ScrollProgress from "@/components/ui/ScrollProgress";
 import SectionReveal from "@/components/ui/SectionReveal";
+import { useApp } from '@/context/AppContext';
 
 // Lazy load heavy sections
 const Devices = dynamic(() => import("@/components/sections/Devices"), { ssr: false });
@@ -19,6 +20,7 @@ const LiquidChrome = dynamic(() => import("@/components/ui/LiquidChrome/LiquidCh
 const MagneticButton = dynamic(() => import("@/components/ui/MagneticButton"), { ssr: false });
 
 export default function Home() {
+  const { theme } = useApp();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [loadingProgress, setLoadingProgress] = useState(100);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -67,7 +69,12 @@ export default function Home() {
             {/* Final Contact Section */}
             <section id="contact" className="min-h-screen bg-background flex flex-col items-center justify-center px-6 relative overflow-hidden border-t border-foreground/5 py-20">
               <div className="absolute inset-0 z-0 opacity-40">
-                <LiquidChrome baseColor={[0.05, 0.05, 0.05]} speed={0.4} amplitude={0.3} interactive={true} />
+                <LiquidChrome
+                  baseColor={theme === 'dark' ? [0.05, 0.05, 0.05] : [1, 1, 1]}
+                  speed={0.4}
+                  amplitude={0.3}
+                  interactive={true}
+                />
               </div>
               <div className="absolute inset-0 bg-gradient-to-t from-foreground/[0.02] to-transparent pointer-events-none z-10" />
 

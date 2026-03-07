@@ -29,7 +29,7 @@ const defaultProfile: ProfileData = {
 };
 
 export default function ProfilePreview() {
-    const { language } = useApp();
+    const { language, theme } = useApp();
     const t = translations[language];
     const [profile, setProfile] = useState<ProfileData>(defaultProfile);
 
@@ -78,7 +78,12 @@ export default function ProfilePreview() {
             {/* Background: Heavy Iridescence on Desktop, Simple Gradient on Mobile */}
             <div className="absolute inset-0 z-0">
                 {!isMobile ? (
-                    <Iridescence color={[0.1, 0.1, 0.1]} mouseReact={true} amplitude={0.1} speed={1.0} />
+                    <Iridescence
+                        color={theme === 'dark' ? [0.1, 0.1, 0.1] : [1, 1, 1]}
+                        mouseReact={true}
+                        amplitude={0.1}
+                        speed={1.0}
+                    />
                 ) : (
                     <div className="w-full h-full bg-gradient-to-b from-zinc-100 to-white dark:from-zinc-900 dark:to-black" />
                 )}

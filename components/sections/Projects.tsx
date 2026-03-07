@@ -5,6 +5,7 @@ import TiltCard from '../ui/TiltCard';
 import RippleGrid from '@/components/ui/RippleGrid/RippleGrid';
 import SectionReveal from '@/components/ui/SectionReveal';
 import ThumbnailGrid from '@/components/ui/ThumbnailGrid/ThumbnailGrid';
+import { useApp } from '@/context/AppContext';
 
 interface Project {
     id: string;
@@ -19,6 +20,7 @@ interface Project {
 }
 
 export default function Projects() {
+    const { theme } = useApp();
     const [projects, setProjects] = useState<Project[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -57,7 +59,7 @@ export default function Projects() {
     return (
         <section id="projects" className="bg-background py-20 md:py-40 px-6 md:px-20 relative overflow-hidden">
             <div className="absolute inset-0 z-0 opacity-40">
-                <RippleGrid />
+                <RippleGrid gridColor={theme === 'dark' ? "#ffffff" : "#000000"} />
             </div>
             <div className="max-w-7xl mx-auto relative z-10">
                 <SectionReveal>
