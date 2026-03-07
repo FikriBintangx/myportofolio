@@ -215,7 +215,17 @@ void main() {
     }
     resize();
 
+    const inViewRef = { current: false };
+    const io = new IntersectionObserver(([entry]) => {
+      inViewRef.current = entry.isIntersecting;
+    }, { threshold: 0.1 });
+    if (containerRef.current) io.observe(containerRef.current);
+
     const render = (t: number) => {
+      if (!inViewRef.current) {
+        requestAnimationFrame(render);
+        return;
+      }
       uniforms.iTime.value = t * 0.001;
 
       const lerpFactor = 0.1;
@@ -236,6 +246,7 @@ void main() {
 
     return () => {
       window.removeEventListener('resize', resize);
+      io.disconnect();
       if (mouseInteraction && containerRef.current) {
         containerRef.current.removeEventListener('mousemove', handleMouseMove);
         containerRef.current.removeEventListener('mouseenter', handleMouseEnter);

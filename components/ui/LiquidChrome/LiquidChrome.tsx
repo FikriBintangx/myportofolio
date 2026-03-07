@@ -138,9 +138,17 @@ export const LiquidChrome: React.FC<LiquidChromeProps> = ({
       container.addEventListener('touchmove', handleTouchMove);
     }
 
+    const inViewRef = { current: false };
+    const io = new IntersectionObserver(([entry]) => {
+      inViewRef.current = entry.isIntersecting;
+    }, { threshold: 0.1 });
+    io.observe(container);
+
     let animationId: number;
     function update(t: number) {
       animationId = requestAnimationFrame(update);
+      if (!inViewRef.current) return;
+
       program.uniforms.uTime.value = t * 0.001 * speed;
       renderer.render({ scene: mesh });
     }
@@ -151,6 +159,7 @@ export const LiquidChrome: React.FC<LiquidChromeProps> = ({
     return () => {
       cancelAnimationFrame(animationId);
       window.removeEventListener('resize', resize);
+      io.disconnect();
       if (interactive) {
         container.removeEventListener('mousemove', handleMouseMove);
         container.removeEventListener('touchmove', handleTouchMove);

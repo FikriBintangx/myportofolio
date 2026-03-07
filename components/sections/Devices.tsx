@@ -1,4 +1,4 @@
-import { useScroll, useTransform, useMotionValueEvent, motion } from 'framer-motion';
+import { useScroll, useTransform, useMotionValueEvent, motion, useInView } from 'framer-motion';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 
@@ -46,13 +46,7 @@ export default function Devices() {
 
     if (!isLoading && gearItems.length === 0) return null;
 
-    if (isLoading) {
-        return (
-            <section className="h-screen bg-background flex items-center justify-center">
-                <div className="text-foreground/20 animate-pulse font-mono text-xs uppercase tracking-[0.4em]">Loading Arsenal...</div>
-            </section>
-        );
-    }
+    if (isLoading) return null; // Silent loading to prevent layout shifts/intrusive screens
 
     return (
         <div className="bg-background transition-colors duration-500 py-20">
@@ -68,7 +62,11 @@ function SingleDevice({ item, isFirst, index }: { item: GearItem, isFirst: boole
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const wrapperRef = useRef<HTMLDivElement>(null);
     const [images, setImages] = useState<HTMLImageElement[]>([]);
+    const [hasLoaded, setHasLoaded] = useState(false);
     const isEven = index % 2 === 0;
+
+    // Use inView to trigger loading only when needed
+    const isInView = useInView(containerRef, { margin: "0px 0px 400px 0px", once: true });
 
     const { scrollYProgress } = useScroll({
         target: containerRef,
@@ -80,11 +78,29 @@ function SingleDevice({ item, isFirst, index }: { item: GearItem, isFirst: boole
     const sequenceProgress = useTransform(scrollYProgress, [0.3, 0.7], [0, 1]);
 
     useEffect(() => {
+        if (!isInView || hasLoaded) return;
+
         const loadImages = async () => {
             const loadedImages: HTMLImageElement[] = [];
             const promises = [];
 
+            // Load first frame immediately
+            const firstImg = new Image();
+            firstImg.src = item.isCustom
+                ? `${item.sequencePath}${item.startFrame.toString().padStart(3, '0')}.jpg`
+                : `/sequence/ezgif-frame-${(item.startFrame + 1).toString().padStart(3, '0')}.jpg`;
+
+            await new Promise((r) => {
+                firstImg.onload = r;
+                firstImg.onerror = r;
+            });
+            loadedImages[item.startFrame] = firstImg;
+            setImages([...loadedImages]);
+
+            // Then load the rest in background
             for (let i = 1; i <= item.frameCount; i++) {
+                if (i - 1 === item.startFrame) continue;
+
                 const promise = new Promise<void>((resolve) => {
                     const img = new Image();
                     img.src = item.isCustom
@@ -98,9 +114,10 @@ function SingleDevice({ item, isFirst, index }: { item: GearItem, isFirst: boole
             }
             await Promise.all(promises);
             setImages(loadedImages);
+            setHasLoaded(true);
         };
         loadImages();
-    }, [item]);
+    }, [item, isInView, hasLoaded]);
 
     const render = useCallback((frameIdx: number) => {
         const canvas = canvasRef.current;

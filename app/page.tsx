@@ -1,20 +1,22 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import Navbar from "@/components/layout/Navbar";
 import Loader from "@/components/layout/Loader";
 import ProfilePreview from "@/components/sections/ProfilePreview";
-import Devices from "@/components/sections/Devices";
-import Projects from "@/components/sections/Projects";
-import Stack from "@/components/sections/Stack";
-import GearList from "@/components/sections/GearList";
-import Experience from "@/components/sections/Experience"; // Added import
 import CustomCursor from "@/components/ui/CustomCursor";
-import MagneticButton from "@/components/ui/MagneticButton";
 import ScrollProgress from "@/components/ui/ScrollProgress";
-
-import LiquidChrome from "@/components/ui/LiquidChrome/LiquidChrome";
 import SectionReveal from "@/components/ui/SectionReveal";
+
+// Lazy load heavy sections
+const Devices = dynamic(() => import("@/components/sections/Devices"), { ssr: false });
+const Projects = dynamic(() => import("@/components/sections/Projects"), { ssr: false });
+const Stack = dynamic(() => import("@/components/sections/Stack"), { ssr: false });
+const GearList = dynamic(() => import("@/components/sections/GearList"), { ssr: false });
+const Experience = dynamic(() => import("@/components/sections/Experience"), { ssr: false });
+const LiquidChrome = dynamic(() => import("@/components/ui/LiquidChrome/LiquidChrome"), { ssr: false });
+const MagneticButton = dynamic(() => import("@/components/ui/MagneticButton"), { ssr: false });
 
 export default function Home() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -48,9 +50,6 @@ export default function Home() {
         <>
           <CustomCursor />
           <ScrollProgress />
-          <div className="bg-noise opacity-[0.03] scale-150"></div>
-
-
 
           <Navbar />
 

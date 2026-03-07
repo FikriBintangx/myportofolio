@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 
 type ColorBendsProps = {
@@ -136,6 +136,7 @@ export default function ColorBends({
   const pointerTargetRef = useRef<THREE.Vector2>(new THREE.Vector2(0, 0));
   const pointerCurrentRef = useRef<THREE.Vector2>(new THREE.Vector2(0, 0));
   const pointerSmoothRef = useRef<number>(8);
+  const inViewRef = useRef<boolean>(false);
 
   useEffect(() => {
     const container = containerRef.current!;
@@ -197,6 +198,12 @@ export default function ColorBends({
 
     handleResize();
 
+    // Intersection Observer to pause loop when not in view
+    const io = new IntersectionObserver(([entry]) => {
+      inViewRef.current = entry.isIntersecting;
+    }, { threshold: 0.1 });
+    io.observe(container);
+
     if ('ResizeObserver' in window) {
       const ro = new ResizeObserver(handleResize);
       ro.observe(container);
@@ -206,6 +213,11 @@ export default function ColorBends({
     }
 
     const loop = () => {
+      if (!inViewRef.current) {
+        rafRef.current = requestAnimationFrame(loop);
+        return;
+      }
+
       const dt = clock.getDelta();
       const elapsed = clock.elapsedTime;
       material.uniforms.uTime.value = elapsed;
@@ -230,6 +242,7 @@ export default function ColorBends({
       if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
       if (resizeObserverRef.current) resizeObserverRef.current.disconnect();
       else (window as Window).removeEventListener('resize', handleResize);
+      io.disconnect();
       geometry.dispose();
       material.dispose();
       renderer.dispose();
