@@ -188,20 +188,33 @@ export default function Navbar() {
                             ))}
                         </div>
 
-                        <div className="absolute top-10 flex flex-col md:flex-row gap-6 md:gap-12 text-[10px] md:text-xs uppercase tracking-[0.3em] text-foreground/40 font-mono text-center">
+                        {/* Social Info at the bottom of the menu */}
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.5 }}
+                            className="mt-12 flex flex-col items-center gap-4 text-center"
+                        >
                             <div className="flex flex-col gap-1">
-                                <span className="text-foreground/20">Kontak</span>
-                                <a href="https://wa.me/6281292870932" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors text-foreground/60">
+                                <span className="text-[10px] uppercase tracking-[0.3em] text-foreground/20 font-mono">Kontak</span>
+                                <a href="https://wa.me/6281292870932" target="_blank" rel="noopener noreferrer" className="text-xl md:text-2xl font-bold hover:text-foreground/80 transition-colors">
                                     081292870932
                                 </a>
                             </div>
                             <div className="flex flex-col gap-1">
-                                <span className="text-foreground/20">Instagram</span>
-                                <a href="https://instagram.com/starbeside_u" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors text-foreground/60">
-                                    starbeside_u
+                                <span className="text-[10px] uppercase tracking-[0.3em] text-foreground/20 font-mono">Instagram</span>
+                                <a href="https://instagram.com/starbeside_u" target="_blank" rel="noopener noreferrer" className="text-xl md:text-2xl font-bold hover:text-foreground/80 transition-colors">
+                                    @starbeside_u
                                 </a>
                             </div>
-                        </div>
+                        </motion.div>
+
+                        <button
+                            onClick={() => setIsOpen(false)}
+                            className="mt-12 p-4 bg-foreground/10 hover:bg-foreground/20 rounded-full text-foreground transition-colors"
+                        >
+                            <X className="w-8 h-8" />
+                        </button>
                     </motion.div>
                 )}
             </AnimatePresence>
