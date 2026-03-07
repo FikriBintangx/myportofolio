@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Home, Smartphone, Layers, Mail, Code, Sun, Moon } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -10,40 +10,95 @@ import { translations } from '@/lib/translations';
 
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
+    const [activeSection, setActiveSection] = useState('');
     const { language, theme, toggleTheme, toggleLanguage } = useApp();
     const t = translations[language];
 
     const links = [
-        { name: t.home, href: '#', icon: <Home className="w-5 h-5" /> },
-        { name: t.profile, href: '#profile', icon: <Smartphone className="w-5 h-5" /> },
-        { name: t.projects, href: '#projects', icon: <Layers className="w-5 h-5" /> },
-        { name: t.stack, href: '#stack', icon: <Code className="w-5 h-5" /> },
-        { name: t.contact, href: '#contact', icon: <Mail className="w-5 h-5" /> },
+        { id: 'top', name: t.home, href: '#', icon: <Home className="w-5 h-5" /> },
+        { id: 'profile', name: t.profile, href: '#profile', icon: <Smartphone className="w-5 h-5" /> },
+        { id: 'projects', name: t.projects, href: '#projects', icon: <Layers className="w-5 h-5" /> },
+        { id: 'stack', name: t.stack, href: '#stack', icon: <Code className="w-5 h-5" /> },
+        { id: 'contact', name: t.contact, href: '#contact', icon: <Mail className="w-5 h-5" /> },
     ];
+
+    useEffect(() => {
+        const observerOptions = {
+            root: null,
+            rootMargin: '-40% 0px -40% 0px', // Trigger when section is in the middle of the screen
+            threshold: 0
+        };
+
+        const observerCallback = (entries: IntersectionObserverEntry[]) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    setActiveSection(entry.target.id || 'top');
+                }
+            });
+        };
+
+        const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+        // Sections to observe
+        const sectionIds = ['profile', 'projects', 'stack', 'contact'];
+        sectionIds.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) observer.observe(el);
+        });
+
+        // Special case for top/home
+        const handleScroll = () => {
+            if (window.scrollY < 100) {
+                setActiveSection('top');
+            }
+        };
+        window.addEventListener('scroll', handleScroll);
+
+        return () => {
+            observer.disconnect();
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
 
     return (
         <>
             <motion.nav
-                // ... (motion config remains same) ...
+                initial={{ y: 100, x: "-50%", opacity: 0 }}
+                animate={{ y: 0, x: "-50%", opacity: 1 }}
                 className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-4 pointer-events-none"
             >
                 <div className="pointer-events-auto flex items-center gap-2 p-2 rounded-full border border-foreground/10 bg-background/50 backdrop-blur-md shadow-2xl ring-1 ring-foreground/10 transition-all duration-500 hover:bg-background/80">
                     {/* Desktop / Dock View */}
-                    <div className="flex items-center gap-1">
-                        {links.map((link) => (
-                            <MagneticButton key={link.name} className="relative group">
-                                <a
-                                    href={link.href}
-                                    className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full bg-transparent hover:bg-foreground/10 transition-colors text-foreground/70 hover:text-foreground"
-                                >
-                                    {link.icon}
-                                    {/* Tooltip */}
-                                    <span className="absolute -top-12 left-1/2 -translate-x-1/2 px-2 py-1 bg-background/80 backdrop-blur border border-foreground/10 rounded-lg text-xs opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none text-foreground">
-                                        {link.name}
-                                    </span>
-                                </a>
-                            </MagneticButton>
-                        ))}
+                    <div className="flex items-center gap-1 relative">
+                        {links.map((link) => {
+                            const isActive = activeSection === link.id || (link.id === 'top' && activeSection === '');
+                            return (
+                                <MagneticButton key={link.name} className="relative group">
+                                    <a
+                                        href={link.href}
+                                        className={cn(
+                                            "w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full transition-colors relative z-10",
+                                            isActive ? "text-background" : "text-foreground/70 hover:text-foreground hover:bg-foreground/10"
+                                        )}
+                                    >
+                                        {link.icon}
+                                        {/* Tooltip */}
+                                        <span className="absolute -top-12 left-1/2 -translate-x-1/2 px-2 py-1 bg-background/80 backdrop-blur border border-foreground/10 rounded-lg text-xs opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none text-foreground">
+                                            {link.name}
+                                        </span>
+
+                                        {/* Active Background Pill */}
+                                        {isActive && (
+                                            <motion.div
+                                                layoutId="nav-active-pill"
+                                                className="absolute inset-0 bg-foreground rounded-full -z-10"
+                                                transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                                            />
+                                        )}
+                                    </a>
+                                </MagneticButton>
+                            );
+                        })}
                     </div>
 
                     {/* Theme Toggle Button */}
