@@ -50,11 +50,7 @@ export default function Projects() {
         fetchProjects();
     }, []);
 
-    if (isLoading) return (
-        <section id="projects" className="bg-background py-40 px-6 md:px-20 min-h-[50vh] flex items-center justify-center">
-            <div className="text-foreground/20 animate-pulse font-mono uppercase tracking-[0.4em] text-xs">Loading Projects...</div>
-        </section>
-    );
+    if (isLoading) return null; // Silent loading to prevent intrusive screens
 
     if (projects.length === 0) return null;
 
