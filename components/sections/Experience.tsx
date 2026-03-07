@@ -45,14 +45,14 @@ export default function Experience() {
                     <motion.h2
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
-                        className="text-4xl md:text-6xl font-bold tracking-tighter text-foreground mb-20"
+                        className="text-4xl md:text-6xl font-bold tracking-tighter text-foreground mb-12 md:mb-20"
                     >
                         Experience
                     </motion.h2>
 
-                    <div className="space-y-20">
+                    <div className="space-y-12 md:space-y-20">
                         {/* Work Experience */}
-                        <div className="relative border-l border-foreground/10 pl-8 md:pl-12 space-y-16">
+                        <div className="relative border-l border-foreground/10 pl-6 md:pl-12 space-y-12 md:space-y-16">
                             {experience.map((job, i) => (
                                 <motion.div
                                     key={i}
@@ -61,15 +61,15 @@ export default function Experience() {
                                     transition={{ delay: i * 0.1 }}
                                     className="relative group"
                                 >
-                                    <div className="absolute -left-[37px] md:-left-[53px] top-2 w-3 h-3 rounded-full bg-zinc-800 border border-zinc-600 group-hover:bg-white group-hover:scale-125 transition-all duration-300" />
+                                    <div className="absolute -left-[31px] md:-left-[53px] top-2 w-3 h-3 rounded-full bg-zinc-800 border border-zinc-600 group-hover:bg-white group-hover:scale-125 transition-all duration-300" />
 
-                                    <div className="flex flex-col md:flex-row md:items-baseline md:justify-between mb-2">
-                                        <h3 className="text-2xl font-bold text-foreground transition-colors group-hover:text-blue-200">{job.role}</h3>
-                                        <span className="text-xs font-mono text-foreground/40 uppercase tracking-widest">{job.period}</span>
+                                    <div className="flex flex-col md:flex-row md:items-baseline md:justify-between mb-2 gap-1 md:gap-0">
+                                        <h3 className="text-xl md:text-2xl font-bold text-foreground transition-colors group-hover:text-blue-200">{job.role}</h3>
+                                        <span className="text-[10px] md:text-xs font-mono text-foreground/40 uppercase tracking-widest">{job.period}</span>
                                     </div>
 
-                                    <div className="text-sm font-medium text-foreground/60 mb-4">{job.company}</div>
-                                    <p className="text-foreground/50 leading-relaxed max-w-2xl group-hover:text-foreground/80 transition-colors">
+                                    <div className="text-xs md:text-sm font-medium text-foreground/60 mb-3 md:mb-4">{job.company}</div>
+                                    <p className="text-sm md:text-base text-foreground/50 leading-relaxed max-w-2xl group-hover:text-foreground/80 transition-colors">
                                         {job.description}
                                     </p>
                                 </motion.div>

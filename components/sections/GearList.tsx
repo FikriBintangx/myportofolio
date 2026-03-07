@@ -66,7 +66,7 @@ export default function GearList() {
                                 className="group flex flex-col items-center text-center"
                             >
                                 <div className="w-full aspect-square relative bg-background border border-foreground/5 rounded-[2rem] p-8 mb-8 overflow-hidden group-hover:border-accent transition-all duration-500 shadow-2xl">
-                                    <div className="absolute inset-0 bg-gradient-to-br from-white/[0.03] to-transparent" />
+                                    <div className="absolute inset-0 bg-gradient-to-br from-foreground/[0.03] to-transparent" />
                                     <img
                                         src={item.image_url}
                                         alt={item.name}

@@ -80,7 +80,7 @@ export default function ProfilePreview() {
                 {!isMobile ? (
                     <Iridescence color={[0.1, 0.1, 0.1]} mouseReact={true} amplitude={0.1} speed={1.0} />
                 ) : (
-                    <div className="w-full h-full bg-gradient-to-b from-zinc-900 to-black" />
+                    <div className="w-full h-full bg-gradient-to-b from-zinc-100 to-white dark:from-zinc-900 dark:to-black" />
                 )}
             </div>
 
@@ -98,7 +98,7 @@ export default function ProfilePreview() {
 
             {/* Mobile Fallback visual (Optional) or just clean styling */}
             {isMobile && (
-                <div className="absolute inset-0 z-10 pointer-events-none opacity-20 bg-[url('/noise.png')] opacity-10" />
+                <div className="absolute inset-0 z-10 pointer-events-none opacity-20 bg-[url('/noise.png')] opacity-10 mix-blend-overlay" />
             )}
 
             {/* Main content wrapper - pointer-events-none to let clicks pass through to Lanyard in empty spaces */}
@@ -111,32 +111,32 @@ export default function ProfilePreview() {
                             whileInView={{ opacity: 1, x: 0 }}
                             transition={{ duration: 0.8 }}
                             viewport={{ once: true }}
-                            className="mb-6 inline-block px-4 py-1 border border-foreground/10 dark:border-foreground/10 light:border-black/10 rounded-full text-[10px] uppercase tracking-[0.3em] text-foreground/40 dark:text-foreground/40 light:text-black/40"
+                            className="mb-6 inline-block px-4 py-1 border border-foreground/10 rounded-full text-[10px] uppercase tracking-[0.3em] text-foreground/40"
                         >
                             {profile.role}
                         </motion.div>
 
-                        <h2 className="text-4xl sm:text-6xl md:text-8xl font-bold tracking-tighter text-foreground dark:text-foreground light:text-black mb-6 md:mb-8 leading-[1.0] md:leading-[0.9]">
+                        <h2 className="text-4xl sm:text-6xl md:text-8xl font-bold tracking-tighter text-foreground mb-6 md:mb-8 leading-[1.0] md:leading-[0.9]">
                             {language === 'id' ? 'Halo, Saya' : "Hello, I'm"} <span className="text-foreground/40 italic">{profile.full_name}</span>.
                         </h2>
 
                         <p
-                            className="text-base sm:text-lg md:text-2xl text-foreground/60 dark:text-foreground/60 light:text-black/60 max-w-2xl font-light leading-relaxed mb-8 md:mb-12"
+                            className="text-base sm:text-lg md:text-2xl text-foreground/60 max-w-2xl font-light leading-relaxed mb-8 md:mb-12"
                             dangerouslySetInnerHTML={{ __html: profile.bio }}
                         />
 
-                        <div className="flex flex-col sm:flex-row flex-wrap gap-8 md:gap-12 text-foreground dark:text-foreground light:text-black">
+                        <div className="flex flex-col sm:flex-row flex-wrap gap-8 md:gap-12 text-foreground">
                             <div>
                                 <div className="text-[9px] md:text-[10px] uppercase tracking-widest text-foreground/30 mb-1 md:mb-2">{t.focus}</div>
-                                <div className="text-sm text-foreground/80 dark:text-foreground/80 light:text-black/80">Next.js / Motion / UI</div>
+                                <div className="text-sm text-foreground/80">Next.js / Motion / UI</div>
                             </div>
                             <div>
                                 <div className="text-[9px] md:text-[10px] uppercase tracking-widest text-foreground/30 mb-1 md:mb-2">{t.status}</div>
-                                <div className="text-sm text-foreground/80 dark:text-foreground/80 light:text-black/80">{language === 'id' && profile.status === 'University Student' ? t.student : profile.status}</div>
+                                <div className="text-sm text-foreground/80">{language === 'id' && profile.status === 'University Student' ? t.student : profile.status}</div>
                             </div>
                             <div>
                                 <div className="text-[9px] md:text-[10px] uppercase tracking-widest text-foreground/30 mb-1 md:mb-2">{t.location}</div>
-                                <div className="text-sm text-foreground/80 dark:text-foreground/80 light:text-black/80">{profile.location}</div>
+                                <div className="text-sm text-foreground/80">{profile.location}</div>
                             </div>
                         </div>
                     </SectionReveal>

@@ -41,7 +41,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="bg-background text-foreground transition-colors duration-500 selection:bg-foreground selection:text-background cursor-none overflow-x-hidden">
+    <main className="bg-background text-foreground transition-colors duration-500 selection:bg-foreground selection:text-background md:cursor-none overflow-x-hidden">
       <Loader progress={loadingProgress} onComplete={() => setIsLoaded(true)} />
 
       {isLoaded && (
@@ -66,14 +66,14 @@ export default function Home() {
             <Experience />
 
             {/* Final Contact Section */}
-            <section id="contact" className="min-h-screen bg-background flex flex-col items-center justify-center px-6 relative overflow-hidden border-t border-foreground/5">
+            <section id="contact" className="min-h-screen bg-background flex flex-col items-center justify-center px-6 relative overflow-hidden border-t border-foreground/5 py-20">
               <div className="absolute inset-0 z-0 opacity-40">
                 <LiquidChrome baseColor={[0.05, 0.05, 0.05]} speed={0.4} amplitude={0.3} interactive={true} />
               </div>
               <div className="absolute inset-0 bg-gradient-to-t from-foreground/[0.02] to-transparent pointer-events-none z-10" />
 
-              <SectionReveal className="relative z-20 flex flex-col items-center">
-                <h2 className="text-5xl md:text-9xl font-bold tracking-tighter text-center mb-16 leading-[0.85] text-foreground">
+              <SectionReveal className="relative z-20 flex flex-col items-center w-full">
+                <h2 className="text-5xl md:text-9xl font-bold tracking-tighter text-center mb-12 md:mb-16 leading-[0.85] text-foreground">
                   Let’s build <br />
                   <span className="text-foreground/20 italic">something</span> <br />
                   meaningful.
@@ -83,15 +83,16 @@ export default function Home() {
                   href={whatsapp ? `https://wa.me/${whatsapp}` : '#contact'}
                   target="_blank"
                   rel="noopener noreferrer"
+                  className="w-full flex justify-center"
                 >
-                  <MagneticButton className="group relative px-12 py-5 bg-foreground text-background text-xs uppercase tracking-[0.4em] font-bold rounded-full hover:scale-105 transition-transform">
+                  <MagneticButton className="group relative px-8 md:px-12 py-4 md:py-5 bg-foreground text-background text-[10px] md:text-xs uppercase tracking-[0.4em] font-bold rounded-full hover:scale-105 transition-transform">
                     Get in Touch
                     <div className="absolute inset-0 rounded-full bg-foreground blur-xl opacity-0 group-hover:opacity-30 transition-opacity" />
                   </MagneticButton>
                 </a>
               </SectionReveal>
 
-              <footer className="absolute bottom-10 left-0 w-full px-10 flex justify-between items-center text-[10px] uppercase tracking-widest text-foreground/20 font-mono">
+              <footer className="absolute bottom-6 md:bottom-10 left-0 w-full px-6 md:px-10 flex flex-col md:flex-row justify-between items-center gap-4 text-[8px] md:text-[10px] uppercase tracking-widest text-foreground/20 font-mono text-center md:text-left">
                 <p>© 2026 IS4GI.dev</p>
                 <p>Awwwards level / Next.js / Motion</p>
               </footer>

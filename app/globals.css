@@ -6,8 +6,10 @@
 }
 
 :root {
-  --background: #ffffff;
-  --foreground: #000000;
+  --background: #fafafa;
+  /* Zinc-50: Softer than pure white */
+  --foreground: #18181b;
+  /* Zinc-900: Softer than pure black */
   --accent: #2563eb;
 }
 
@@ -100,6 +102,7 @@ body {
     transform: translate(5%, 0)
   }
 }
+
 @keyframes scroll {
   to {
     transform: translate(calc(-50% - 0.5rem));

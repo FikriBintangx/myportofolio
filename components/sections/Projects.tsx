@@ -65,7 +65,7 @@ export default function Projects() {
             </div>
             <div className="max-w-7xl mx-auto relative z-10">
                 <SectionReveal>
-                    <div className="flex justify-between items-end mb-24 border-b border-foreground/5 pb-12">
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 md:mb-24 border-b border-foreground/5 pb-12 gap-4">
                         <div>
                             <h2 className="text-4xl md:text-6xl font-bold tracking-tighter text-foreground">Selected Works</h2>
                             <p className="text-foreground/40 mt-4 max-w-sm uppercase text-[10px] tracking-[0.2em]">A collection of digital objects and interfaces.</p>
@@ -75,7 +75,7 @@ export default function Projects() {
                 </SectionReveal>
 
                 <SectionReveal delay={0.2}>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-24">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-24">
                         {projects.map((project, i) => (
                             <motion.div
                                 key={i}
@@ -87,16 +87,16 @@ export default function Projects() {
 
                             >
                                 <TiltCard>
-                                    <div className="group relative aspect-[4/5] bg-zinc-900 rounded-2xl overflow-hidden mb-8">
+                                    <div className="group relative aspect-[4/5] bg-zinc-100 dark:bg-zinc-900 rounded-2xl overflow-hidden mb-6 md:mb-8">
                                         <div className="absolute inset-0 w-full h-full">
                                             <ThumbnailGrid
                                                 images={project.thumbnails && project.thumbnails.length > 0 ? project.thumbnails : [project.thumbnail_url]}
                                                 alt={project.title}
                                             />
                                         </div>
-                                        <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/40 to-transparent flex flex-col justify-end p-8 pointer-events-none">
+                                        <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/40 to-transparent flex flex-col justify-end p-6 md:p-8 pointer-events-none">
                                             <div className="text-[10px] uppercase tracking-widest text-foreground/50 mb-2">{project.category}</div>
-                                            <h3 className="text-3xl font-bold text-foreground tracking-tighter">{project.title}</h3>
+                                            <h3 className="text-2xl md:text-3xl font-bold text-foreground tracking-tighter">{project.title}</h3>
                                         </div>
                                     </div>
                                 </TiltCard>
