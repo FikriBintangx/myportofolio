@@ -185,10 +185,19 @@ export default function Navbar() {
                             ))}
                         </div>
 
-                        <div className="absolute top-10 flex gap-4 text-sm uppercase tracking-widest text-foreground/30">
-                            <span>Instagram</span>
-                            <span>LinkedIn</span>
-                            <span>GitHub</span>
+                        <div className="absolute top-10 flex flex-col md:flex-row gap-6 md:gap-12 text-[10px] md:text-xs uppercase tracking-[0.3em] text-foreground/40 font-mono text-center">
+                            <div className="flex flex-col gap-1">
+                                <span className="text-foreground/20">Kontak</span>
+                                <a href="https://wa.me/6281292870932" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors text-foreground/60">
+                                    081292870932
+                                </a>
+                            </div>
+                            <div className="flex flex-col gap-1">
+                                <span className="text-foreground/20">Instagram</span>
+                                <a href="https://instagram.com/starbeside_u" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors text-foreground/60">
+                                    starbeside_u
+                                </a>
+                            </div>
                         </div>
                     </motion.div>
                 )}
