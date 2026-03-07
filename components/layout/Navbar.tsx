@@ -63,15 +63,18 @@ export default function Navbar() {
     return (
         <>
             <motion.nav
-                initial={{ y: 100, x: "-50%", opacity: 0 }}
-                animate={{ y: 0, x: "-50%", opacity: 1 }}
+                initial={{ y: 100, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
                 className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-4 pointer-events-none"
             >
                 <div className="pointer-events-auto flex items-center gap-2 p-2 rounded-full border border-foreground/10 bg-background/50 backdrop-blur-md shadow-2xl ring-1 ring-foreground/10 transition-all duration-500 hover:bg-background/80">
                     {/* Desktop / Dock View */}
                     <div className="flex items-center gap-1 relative">
                         {links.map((link) => {
-                            const isActive = activeSection === link.id || (link.id === 'top' && activeSection === '');
+                            // Exclude specific IDs from being visually "active" even if they are logically active
+                            const isExcludedFromActiveEffect = ['top', 'projects', 'stack'].includes(link.id);
+                            const isActive = !isExcludedFromActiveEffect && (activeSection === link.id || (link.id === 'top' && activeSection === ''));
+
                             return (
                                 <MagneticButton key={link.name} className="relative group">
                                     <a
@@ -87,7 +90,7 @@ export default function Navbar() {
                                             {link.name}
                                         </span>
 
-                                        {/* Active Background Pill */}
+                                        {/* Active Background Pill - Only for non-excluded items */}
                                         {isActive && (
                                             <motion.div
                                                 layoutId="nav-active-pill"
