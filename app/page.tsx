@@ -2,12 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
+import { motion } from 'framer-motion';
 import Navbar from "@/components/layout/Navbar";
 import Loader from "@/components/layout/Loader";
 import ProfilePreview from "@/components/sections/ProfilePreview";
 import CustomCursor from "@/components/ui/CustomCursor";
 import ScrollProgress from "@/components/ui/ScrollProgress";
 import SectionReveal from "@/components/ui/SectionReveal";
+import CustomContextMenu from "@/components/ui/CustomContextMenu";
 import { useApp } from '@/context/AppContext';
 
 // Lazy load heavy sections
@@ -48,64 +50,107 @@ export default function Home() {
     <main className="bg-background text-foreground transition-colors duration-500 selection:bg-foreground selection:text-background md:cursor-none overflow-x-hidden">
       <Loader progress={loadingProgress} onComplete={() => setIsLoaded(true)} />
 
-      {isLoaded && (
+      {!isLoaded ? (
+        <div className="fixed inset-0 bg-background z-[100] flex items-center justify-center">
+          <motion.div
+            animate={{ opacity: [0.2, 1, 0.2] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+            className="w-20 h-[1px] bg-foreground/20"
+          />
+        </div>
+      ) : (
         <>
           <CustomCursor />
           <ScrollProgress />
-
           <Navbar />
+          <CustomContextMenu />
 
-          <div className="relative z-10">
-            <ProfilePreview />
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="relative z-10"
+          >
+            <SectionWrapper id="profile">
+              <ProfilePreview />
+            </SectionWrapper>
 
-            {/* Signature Devices Section */}
-            <Devices />
+            <SectionWrapper id="devices">
+              <Devices />
+            </SectionWrapper>
 
-            <Projects />
-            <Stack />
-            <GearList />
-            <Experience />
+            <SectionWrapper id="projects">
+              <Projects />
+            </SectionWrapper>
+
+            <SectionWrapper id="stack">
+              <Stack />
+            </SectionWrapper>
+
+            <SectionWrapper id="gear">
+              <GearList />
+            </SectionWrapper>
+
+            <SectionWrapper id="experience">
+              <Experience />
+            </SectionWrapper>
 
             {/* Final Contact Section */}
-            <section id="contact" className="min-h-screen bg-background flex flex-col items-center justify-center px-6 relative overflow-hidden border-t border-foreground/5 py-20">
-              <div className="absolute inset-0 z-0 opacity-40">
-                <LiquidChrome
-                  baseColor={theme === 'dark' ? [0.05, 0.05, 0.05] : [1, 1, 1]}
-                  speed={0.4}
-                  amplitude={0.3}
-                  interactive={true}
-                />
-              </div>
-              <div className="absolute inset-0 bg-gradient-to-t from-foreground/[0.02] to-transparent pointer-events-none z-10" />
+            <SectionWrapper id="contact">
+              <section className="min-h-screen bg-background flex flex-col items-center justify-center px-6 relative overflow-hidden border-t border-foreground/5 py-20">
+                <div className="absolute inset-0 z-0 opacity-40">
+                  <LiquidChrome
+                    baseColor={theme === 'dark' ? [0.05, 0.05, 0.05] : [1, 1, 1]}
+                    speed={0.4}
+                    amplitude={0.3}
+                    interactive={true}
+                  />
+                </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-foreground/[0.02] to-transparent pointer-events-none z-10" />
 
-              <SectionReveal className="relative z-20 flex flex-col items-center w-full">
-                <h2 className="text-5xl md:text-9xl font-bold tracking-tighter text-center mb-12 md:mb-16 leading-[0.85] text-foreground">
-                  Let’s build <br />
-                  <span className="text-foreground/20 italic">something</span> <br />
-                  meaningful.
-                </h2>
+                <div className="relative z-20 flex flex-col items-center w-full">
+                  <h2 className="text-5xl md:text-9xl font-bold tracking-tighter text-center mb-12 md:mb-16 leading-[0.85] text-foreground">
+                    Let’s build <br />
+                    <span className="text-foreground/20 italic">something</span> <br />
+                    meaningful.
+                  </h2>
 
-                <a
-                  href={whatsapp ? `https://wa.me/${whatsapp}` : '#contact'}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full flex justify-center"
-                >
-                  <MagneticButton className="group relative px-8 md:px-12 py-4 md:py-5 bg-foreground text-background text-[10px] md:text-xs uppercase tracking-[0.4em] font-bold rounded-full hover:scale-105 transition-transform">
-                    Get in Touch
-                    <div className="absolute inset-0 rounded-full bg-foreground blur-xl opacity-0 group-hover:opacity-30 transition-opacity" />
-                  </MagneticButton>
-                </a>
-              </SectionReveal>
+                  <a
+                    href={whatsapp ? `https://wa.me/${whatsapp}` : '#contact'}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full flex justify-center"
+                  >
+                    <MagneticButton className="group relative px-8 md:px-12 py-4 md:py-5 bg-foreground text-background text-[10px] md:text-xs uppercase tracking-[0.4em] font-bold rounded-full hover:scale-105 transition-transform shadow-[0_20px_50px_rgba(0,0,0,0.3)]">
+                      Get in Touch
+                      <div className="absolute inset-0 rounded-full bg-foreground blur-xl opacity-0 group-hover:opacity-30 transition-opacity" />
+                    </MagneticButton>
+                  </a>
+                </div>
 
-              <footer className="absolute bottom-6 md:bottom-10 left-0 w-full px-6 md:px-10 flex flex-col md:flex-row justify-between items-center gap-4 text-[8px] md:text-[10px] uppercase tracking-widest text-foreground/20 font-mono text-center md:text-left">
-                <p>© 2026 IS4GI.dev</p>
-                <p>Awwwards level / Next.js / Motion</p>
-              </footer>
-            </section>
-          </div>
+                <footer className="absolute bottom-6 md:bottom-20 left-0 w-full px-6 md:px-10 flex flex-col md:flex-row justify-between items-center gap-4 text-[8px] md:text-[10px] uppercase tracking-widest text-foreground/20 font-mono text-center md:text-left">
+                  <p>© 2026 IS4GI.dev</p>
+                  <p>Awwwards level / Next.js / Motion</p>
+                </footer>
+              </section>
+            </SectionWrapper>
+          </motion.div>
         </>
       )}
     </main>
+  );
+}
+
+// Sub-component for clean animations
+function SectionWrapper({ children, id }: { children: React.ReactNode, id: string }) {
+  return (
+    <motion.div
+      id={id}
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+      viewport={{ once: true, margin: "-10%" }}
+    >
+      {children}
+    </motion.div>
   );
 }

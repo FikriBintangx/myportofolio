@@ -25,32 +25,28 @@ export default function Navbar() {
     useEffect(() => {
         const observerOptions = {
             root: null,
-            rootMargin: '-40% 0px -40% 0px', // Trigger when section is in the middle of the screen
-            threshold: 0
+            rootMargin: '0px',
+            threshold: 0.5 // 50% section visibility
         };
 
         const observerCallback = (entries: IntersectionObserverEntry[]) => {
             entries.forEach((entry) => {
                 if (entry.isIntersecting) {
-                    setActiveSection(entry.target.id || 'top');
+                    setActiveSection(entry.target.id);
                 }
             });
         };
 
         const observer = new IntersectionObserver(observerCallback, observerOptions);
 
-        // Sections to observe
-        const sectionIds = ['profile', 'projects', 'stack', 'contact'];
-        sectionIds.forEach(id => {
+        const sections = ['profile', 'projects', 'stack', 'contact', 'experience'];
+        sections.forEach(id => {
             const el = document.getElementById(id);
             if (el) observer.observe(el);
         });
 
-        // Special case for top/home
         const handleScroll = () => {
-            if (window.scrollY < 100) {
-                setActiveSection('top');
-            }
+            if (window.scrollY < 100) setActiveSection('profile');
         };
         window.addEventListener('scroll', handleScroll);
 
@@ -65,37 +61,44 @@ export default function Navbar() {
             <motion.nav
                 initial={{ y: 100, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-4 pointer-events-none"
+                className="fixed bottom-0 left-0 w-full z-50 flex justify-center pb-6 md:pb-10 pointer-events-none"
             >
-                <div className="pointer-events-auto flex items-center gap-2 p-2 rounded-full border border-foreground/10 bg-background/50 backdrop-blur-md shadow-2xl ring-1 ring-foreground/10 transition-all duration-500 hover:bg-background/80">
-                    {/* Desktop / Dock View */}
-                    <div className="flex items-center gap-1 relative">
+                <motion.div
+                    layout
+                    className="pointer-events-auto flex items-center gap-1 p-2 rounded-full border border-foreground/10 bg-background/40 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] ring-1 ring-white/5 transition-all duration-500 hover:bg-background/60"
+                >
+                    <div className="flex items-center gap-1">
                         {links.map((link) => {
-                            // Exclude specific IDs from being visually "active" even if they are logically active
-                            const isExcludedFromActiveEffect = ['top', 'projects', 'stack'].includes(link.id);
-                            const isActive = !isExcludedFromActiveEffect && (activeSection === link.id || (link.id === 'top' && activeSection === ''));
+                            const isActive = activeSection === link.id || (link.id === 'top' && activeSection === 'profile');
 
                             return (
-                                <MagneticButton key={link.name} className="relative group">
+                                <MagneticButton key={link.id} className="relative group">
                                     <a
                                         href={link.href}
                                         className={cn(
-                                            "w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full transition-colors relative z-10",
-                                            isActive ? "text-background" : "text-foreground/70 hover:text-foreground hover:bg-foreground/10"
+                                            "w-10 h-10 md:w-14 md:h-14 flex items-center justify-center rounded-full transition-all relative z-10",
+                                            isActive ? "text-background scale-110" : "text-foreground/40 hover:text-foreground hover:bg-foreground/5"
                                         )}
                                     >
-                                        {link.icon}
-                                        {/* Tooltip */}
-                                        <span className="absolute -top-12 left-1/2 -translate-x-1/2 px-2 py-1 bg-background/80 backdrop-blur border border-foreground/10 rounded-lg text-xs opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none text-foreground">
+                                        <div className="relative">
+                                            {link.icon}
+                                            {isActive && (
+                                                <motion.div
+                                                    layoutId="nav-glow"
+                                                    className="absolute -inset-4 bg-foreground/20 blur-xl rounded-full -z-20"
+                                                />
+                                            )}
+                                        </div>
+
+                                        <span className="absolute -top-14 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-background border border-foreground/10 rounded-xl text-[10px] font-bold opacity-0 group-hover:opacity-100 transition-all scale-75 group-hover:scale-100 whitespace-nowrap pointer-events-none text-foreground shadow-2xl">
                                             {link.name}
                                         </span>
 
-                                        {/* Active Background Pill - Only for non-excluded items */}
                                         {isActive && (
                                             <motion.div
-                                                layoutId="nav-active-pill"
-                                                className="absolute inset-0 bg-foreground rounded-full -z-10"
-                                                transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                                                layoutId="nav-active-dock"
+                                                className="absolute inset-0 bg-foreground rounded-full -z-10 shadow-[0_0_20px_rgba(255,255,255,0.3)]"
+                                                transition={{ type: "spring", bounce: 0.25, duration: 0.5 }}
                                             />
                                         )}
                                     </a>
@@ -104,49 +107,25 @@ export default function Navbar() {
                         })}
                     </div>
 
-                    {/* Theme Toggle Button */}
+                    <div className="w-[1px] h-8 bg-foreground/10 mx-2" />
+
                     <MagneticButton>
                         <button
                             onClick={toggleTheme}
-                            className="p-2 text-foreground/50 hover:text-foreground transition-colors mr-1"
-                            title="Toggle Theme (Alt + A)"
+                            className="w-10 h-10 md:w-14 md:h-14 flex items-center justify-center rounded-full text-foreground/40 hover:text-foreground transition-all"
                         >
                             {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
                         </button>
                     </MagneticButton>
 
-                    <div className="w-[1px] h-6 bg-foreground/10 mx-2" />
-
-                    {/* Shortcuts Visual */}
-                    <div className="hidden md:flex flex-col items-center text-[8px] uppercase tracking-tighter text-foreground/30 mr-2 font-mono">
-                        <span>Alt + A</span>
-                        <span>Theme</span>
-                    </div>
-
-                    <div className="hidden md:flex flex-col items-center text-[8px] uppercase tracking-tighter text-foreground/30 mr-4 font-mono">
-                        <span>Ctrl + U</span>
-                        <span>Lang</span>
-                    </div>
-
-                    {/* Menu Toggle */}
                     <MagneticButton>
                         <button
                             onClick={() => setIsOpen(true)}
-                            className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full bg-foreground text-background font-bold hover:scale-110 transition-transform"
+                            className="w-10 h-10 md:w-14 md:h-14 flex items-center justify-center rounded-full bg-foreground text-background shadow-lg hover:scale-110 active:scale-95 transition-all"
                         >
                             <Menu className="w-5 h-5" />
                         </button>
                     </MagneticButton>
-                </div>
-
-                {/* Shortcut Legend - Hidden on Mobile */}
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="hidden md:flex gap-4 text-[10px] uppercase tracking-[0.2em] text-foreground/20"
-                >
-                    <span>Alt+A: Theme</span>
-                    <span>U: Lang</span>
                 </motion.div>
             </motion.nav>
 
