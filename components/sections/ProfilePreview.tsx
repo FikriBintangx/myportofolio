@@ -113,22 +113,12 @@ export default function ProfilePreview() {
                 {/* Left side: Text content - pointer-events-auto to allow text selection/interaction */}
                 <div className="max-w-2xl pointer-events-auto">
                     <SectionReveal delay={0.3}>
-                        <div className="flex items-center gap-4 mb-6">
-                            <motion.div
-                                initial={{ opacity: 0, x: -20 }}
-                                whileInView={{ opacity: 1, x: 0 }}
-                                transition={{ duration: 0.8 }}
-                                viewport={{ once: true }}
-                                className="px-4 py-1 border border-foreground/10 rounded-full text-[10px] uppercase tracking-[0.3em] text-foreground/40"
-                            >
-                                {profile.role}
-                            </motion.div>
-
+                        <div className="space-y-4 mb-8">
                             {profile.is_available && (
                                 <motion.div
-                                    initial={{ opacity: 0, scale: 0.8 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    className="flex items-center gap-2 px-3 py-1 bg-green-500/10 border border-green-500/20 rounded-full ml-2"
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="inline-flex items-center gap-2 px-3 py-1 bg-green-500/10 border border-green-500/20 rounded-full"
                                 >
                                     <span className="relative flex h-1.5 w-1.5">
                                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
@@ -137,6 +127,18 @@ export default function ProfilePreview() {
                                     <span className="text-[8px] uppercase tracking-widest text-green-500 font-bold">Available for hire</span>
                                 </motion.div>
                             )}
+
+                            <div>
+                                <motion.div
+                                    initial={{ opacity: 0, x: -20 }}
+                                    whileInView={{ opacity: 1, x: 0 }}
+                                    transition={{ duration: 0.8 }}
+                                    viewport={{ once: true }}
+                                    className="inline-block px-4 py-1 border border-foreground/10 rounded-full text-[10px] uppercase tracking-[0.3em] text-foreground/40"
+                                >
+                                    {profile.role}
+                                </motion.div>
+                            </div>
                         </div>
 
                         <h2 className="text-4xl sm:text-6xl md:text-8xl font-bold tracking-tighter text-foreground mb-6 md:mb-8 leading-[1.0] md:leading-[0.9]">
