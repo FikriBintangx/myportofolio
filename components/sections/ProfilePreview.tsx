@@ -81,7 +81,7 @@ export default function ProfilePreview() {
             <div className="absolute inset-0 z-0">
                 {!isMobile ? (
                     <Iridescence
-                        color={theme === 'dark' ? [0.1, 0.1, 0.1] : [1, 1, 1]}
+                        color={theme === 'dark' ? [0.1, 0.1, 0.1] : [0.9, 0.9, 0.9]}
                         mouseReact={true}
                         amplitude={0.1}
                         speed={1.0}

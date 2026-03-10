@@ -50,15 +50,7 @@ export default function Home() {
     <main className="bg-background text-foreground transition-colors duration-500 selection:bg-foreground selection:text-background md:cursor-none overflow-x-hidden">
       <Loader progress={loadingProgress} onComplete={() => setIsLoaded(true)} />
 
-      {!isLoaded ? (
-        <div className="fixed inset-0 bg-background z-[100] flex items-center justify-center">
-          <motion.div
-            animate={{ opacity: [0.2, 1, 0.2] }}
-            transition={{ duration: 1.5, repeat: Infinity }}
-            className="w-20 h-[1px] bg-foreground/20"
-          />
-        </div>
-      ) : (
+      {isLoaded && (
         <>
           <CustomCursor />
           <ScrollProgress />
@@ -66,8 +58,6 @@ export default function Home() {
           <CustomContextMenu />
 
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
             className="relative z-10"
           >
             <SectionWrapper id="profile">

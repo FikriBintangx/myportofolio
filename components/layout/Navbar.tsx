@@ -61,7 +61,7 @@ export default function Navbar() {
             <motion.nav
                 initial={{ y: 100, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                className="fixed bottom-0 left-0 w-full z-50 flex justify-center pb-6 md:pb-10 pointer-events-none"
+                className="fixed bottom-8 left-0 w-full z-50 flex justify-center pointer-events-none"
             >
                 <motion.div
                     layout
