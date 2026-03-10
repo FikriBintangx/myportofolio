@@ -65,7 +65,7 @@ export default function Navbar() {
             <motion.nav
                 initial={{ y: 100, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-4 pointer-events-none"
+                className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-4 pointer-events-none"
             >
                 <div className="pointer-events-auto flex items-center gap-2 p-2 rounded-full border border-foreground/10 bg-background/50 backdrop-blur-md shadow-2xl ring-1 ring-foreground/10 transition-all duration-500 hover:bg-background/80">
                     {/* Desktop / Dock View */}
