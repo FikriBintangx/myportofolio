@@ -174,8 +174,6 @@ function Band({ maxSpeed = 50, minSpeed = 0, isMobile = false, textureUrl = '/la
         }
     }, [hovered, dragged]);
 
-    const jLerp = new THREE.Vector3();
-
     useFrame((state, delta) => {
         if (dragged) {
             vec.set(state.pointer.x, state.pointer.y, 0.5).unproject(state.camera);
@@ -187,12 +185,6 @@ function Band({ maxSpeed = 50, minSpeed = 0, isMobile = false, textureUrl = '/la
                 y: vec.y - dragged.y,
                 z: vec.z - dragged.z
             });
-        }
-
-        // Subtle mouse influence on the anchor
-        if (fixed.current) {
-            jLerp.lerp(vec.set(state.pointer.x * 2, state.pointer.y * 2 + anchorPosition[1], anchorPosition[2]), 0.1);
-            fixed.current.setNextKinematicTranslation(jLerp);
         }
 
         if (fixed.current) {
@@ -218,7 +210,7 @@ function Band({ maxSpeed = 50, minSpeed = 0, isMobile = false, textureUrl = '/la
     return (
         <>
             <group position={anchorPosition}>
-                <RigidBody ref={fixed} {...segmentProps} type={'kinematicPosition' as RigidBodyProps['type']} />
+                <RigidBody ref={fixed} {...segmentProps} type={'fixed' as RigidBodyProps['type']} />
                 <RigidBody position={[0.5, 0, 0]} ref={j1} {...segmentProps} type={'dynamic' as RigidBodyProps['type']}>
                     <BallCollider args={[0.1]} />
                 </RigidBody>

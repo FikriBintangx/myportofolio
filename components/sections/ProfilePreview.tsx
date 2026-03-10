@@ -128,7 +128,7 @@ export default function ProfilePreview() {
                                 <motion.div
                                     initial={{ opacity: 0, scale: 0.8 }}
                                     animate={{ opacity: 1, scale: 1 }}
-                                    className="flex items-center gap-2 px-3 py-1 bg-green-500/10 border border-green-500/20 rounded-full"
+                                    className="flex items-center gap-2 px-3 py-1 bg-green-500/10 border border-green-500/20 rounded-full ml-2"
                                 >
                                     <span className="relative flex h-1.5 w-1.5">
                                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
