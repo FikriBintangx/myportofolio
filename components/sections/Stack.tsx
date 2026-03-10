@@ -1,31 +1,35 @@
 import { InfiniteMovingCards } from '../ui/InfiniteMovingCards';
 import SectionReveal from '../ui/SectionReveal';
+import { useEffect, useState } from 'react';
+import { createClient } from '@/lib/supabase/client';
 
 interface StackItem {
     category: string;
     tools: string[];
 }
 
-const stack: StackItem[] = [
-    {
-        category: "Languages",
-        tools: ["HTML/CSS", "Dart", "JavaScript", "PHP", "TypeScript", "SQL"]
-    },
-    {
-        category: "Frameworks & Libraries",
-        tools: ["React", "Next.js", "Flutter", "TailwindCSS", "Framer Motion", "CodeIgniter"]
-    },
-    {
-        category: "Tools & AI",
-        tools: ["ChatGPT", "Gemini", "Antigravity", "Git", "Cursor", "VS Code", "Figma"]
-    },
-    {
-        category: "Hardware",
-        tools: ["ROG Flow X13", "Oppo Reno 14", "Mechanical Keyboard", "Sony Alpha"]
-    }
-];
-
 export default function Stack() {
+    const [stacks, setStacks] = useState<StackItem[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchStacks = async () => {
+            const supabase = createClient();
+            const { data } = await supabase.from('stack').select('*').order('order', { ascending: true });
+
+            if (data) {
+                setStacks(data.map((item: any) => ({
+                    category: item.category,
+                    tools: item.tools.split(',').map((t: string) => t.trim())
+                })));
+            }
+            setIsLoading(false);
+        };
+        fetchStacks();
+    }, []);
+
+    if (isLoading || stacks.length === 0) return null;
+
     return (
         <section id="stack" className="bg-background py-20 md:py-40 overflow-hidden border-t border-foreground/5 relative">
             <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-background via-transparent to-background z-10" />
@@ -38,9 +42,8 @@ export default function Stack() {
             </SectionReveal>
 
             <SectionReveal delay={0.2} className="flex flex-col gap-10 md:gap-16 relative z-0">
-                {stack.map((item, i) => (
+                {stacks.map((item, i) => (
                     <div key={item.category} className="w-full">
-                        {/* <div className="text-center mb-4 text-[10px] uppercase tracking-widest text-foreground/30">{item.category}</div> */}
                         <InfiniteMovingCards
                             items={[...item.tools, ...item.tools, ...item.tools]} // Duplicate to ensure enough width for loop if items are few
                             direction={i % 2 === 0 ? "left" : "right"}

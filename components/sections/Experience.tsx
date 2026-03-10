@@ -4,39 +4,33 @@ import { motion } from 'framer-motion';
 import ColorBends from '@/components/ui/ColorBends/ColorBends';
 import SectionReveal from '@/components/ui/SectionReveal';
 import { useApp } from '@/context/AppContext';
+import { useEffect, useState } from 'react';
+import { createClient } from '@/lib/supabase/client';
 
-const education = [
-    {
-        role: "University Student",
-        company: "Kampus",
-        period: "Present",
-        description: "Currently pursuing a degree."
-    }
-];
-
-const experience = [
-    {
-        role: "Crew Member",
-        company: "McDonald's",
-        period: "Past",
-        description: "Melayani customer dengan ramah dan ikhlas. Ensuring high-quality service and customer satisfaction in a fast-paced environment."
-    },
-    {
-        role: "Operator Mesin (CNC)",
-        company: "Manufacturing",
-        period: "Past",
-        description: "Memproduksi berbagai sparepart motor dan mobil menggunakan mesin CNC. Precision machining and quality control for automotive components."
-    },
-    {
-        role: "Admin Delivery",
-        company: "Logistics Branch",
-        period: "Past",
-        description: "Menginput barang keluar dan masuk dari cabang. Managing inventory data and coordinating logistics flow."
-    }
-];
+interface ExpItem {
+    role: string;
+    company: string;
+    period: string;
+    description: string;
+}
 
 export default function Experience() {
     const { theme } = useApp();
+    const [experiences, setExperiences] = useState<ExpItem[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchExp = async () => {
+            const supabase = createClient();
+            const { data } = await supabase.from('experience').select('*').order('order', { ascending: true });
+            if (data) setExperiences(data);
+            setIsLoading(false);
+        };
+        fetchExp();
+    }, []);
+
+    if (isLoading || experiences.length === 0) return null;
+
     return (
         <section id="experience" className="bg-background py-20 md:py-40 px-6 md:px-20 border-t border-foreground/5 relative overflow-hidden">
             <div className="absolute inset-0 z-0 opacity-30">
@@ -55,7 +49,7 @@ export default function Experience() {
                     <div className="space-y-12 md:space-y-20">
                         {/* Work Experience */}
                         <div className="relative border-l border-foreground/10 pl-6 md:pl-12 space-y-12 md:space-y-16">
-                            {experience.map((job, i) => (
+                            {experiences.map((job, i) => (
                                 <motion.div
                                     key={i}
                                     initial={{ opacity: 0, x: -20 }}

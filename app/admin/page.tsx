@@ -22,6 +22,7 @@ export default function AdminDashboard() {
         status: string;
         whatsapp: string;
         lanyard_texture_url?: string;
+        is_available?: boolean;
     }
 
     // Profile Form State
@@ -46,6 +47,8 @@ export default function AdminDashboard() {
         link: string;
         image_urls?: string[];
         order?: number;
+        content?: string;
+        stack?: string;
     }
 
     // Projects State
@@ -58,7 +61,9 @@ export default function AdminDashboard() {
         thumbnail_url: '',
         project_date: '',
         category: '',
-        link: ''
+        link: '',
+        content: '',
+        stack: ''
     });
 
     interface Gear {
@@ -90,6 +95,42 @@ export default function AdminDashboard() {
         order: 0
     });
 
+    interface Experience {
+        id?: string | number;
+        role: string;
+        company: string;
+        period: string;
+        description: string;
+        order: number;
+    }
+
+    const [experiences, setExperiences] = useState<Experience[]>([]);
+    const [editingExp, setEditingExp] = useState<Experience | null>(null);
+    const [isAddingExp, setIsAddingExp] = useState(false);
+    const [addingExpData, setAddingExpData] = useState<Experience>({
+        role: '',
+        company: '',
+        period: '',
+        description: '',
+        order: 0
+    });
+
+    interface StackItem {
+        id?: string | number;
+        category: string;
+        tools: string;
+        order: number;
+    }
+
+    const [stacks, setStacks] = useState<StackItem[]>([]);
+    const [editingStack, setEditingStack] = useState<StackItem | null>(null);
+    const [isAddingStack, setIsAddingStack] = useState(false);
+    const [addingStackData, setAddingStackData] = useState<StackItem>({
+        category: '',
+        tools: '',
+        order: 0
+    });
+
     // CV State
     const [cvUrl, setCvUrl] = useState('');
 
@@ -104,6 +145,8 @@ export default function AdminDashboard() {
             fetchContent();
             fetchProjects();
             fetchGear();
+            fetchExperiences();
+            fetchStacks();
         };
 
         checkUser();
@@ -290,6 +333,52 @@ export default function AdminDashboard() {
         }
     };
 
+    const fetchExperiences = async () => {
+        const { data } = await supabase.from('experience').select('*').order('order', { ascending: true });
+        if (data) setExperiences(data);
+    };
+
+    const handleExpSave = async (item: any) => {
+        const { id, ...dataToSave } = item;
+        if (id) {
+            const { error } = await supabase.from('experience').update(dataToSave).eq('id', id);
+            if (!error) { fetchExperiences(); setEditingExp(null); }
+        } else {
+            const { error } = await supabase.from('experience').insert([dataToSave]);
+            if (!error) { fetchExperiences(); setIsAddingExp(false); }
+        }
+    };
+
+    const handleExpDelete = async (id: any) => {
+        if (confirm('Delete this experience?')) {
+            const { error } = await supabase.from('experience').delete().eq('id', id);
+            if (!error) fetchExperiences();
+        }
+    };
+
+    const fetchStacks = async () => {
+        const { data } = await supabase.from('stack').select('*').order('order', { ascending: true });
+        if (data) setStacks(data);
+    };
+
+    const handleStackSave = async (item: any) => {
+        const { id, ...dataToSave } = item;
+        if (id) {
+            const { error } = await supabase.from('stack').update(dataToSave).eq('id', id);
+            if (!error) { fetchStacks(); setEditingStack(null); }
+        } else {
+            const { error } = await supabase.from('stack').insert([dataToSave]);
+            if (!error) { fetchStacks(); setIsAddingStack(false); }
+        }
+    };
+
+    const handleStackDelete = async (id: any) => {
+        if (confirm('Delete this stack?')) {
+            const { error } = await supabase.from('stack').delete().eq('id', id);
+            if (!error) fetchStacks();
+        }
+    };
+
 
 
     const updateProfile = async () => {
@@ -340,6 +429,20 @@ export default function AdminDashboard() {
                     >
                         <Smartphone size={18} />
                         <span className="font-medium">Devices</span>
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('experience')}
+                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${activeTab === 'experience' ? 'bg-white text-black' : 'hover:bg-white/5 text-white/60'}`}
+                    >
+                        <ExternalLink size={18} />
+                        <span className="font-medium">Experience</span>
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('stack')}
+                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${activeTab === 'stack' ? 'bg-white text-black' : 'hover:bg-white/5 text-white/60'}`}
+                    >
+                        <Plus size={18} />
+                        <span className="font-medium">Stack</span>
                     </button>
                     <button
                         onClick={() => setActiveTab('data')}
@@ -473,6 +576,19 @@ export default function AdminDashboard() {
                                 <p className="text-[10px] text-white/30 mt-2">Format: 08xx or +62xx (will be converted to wa.me link)</p>
                             </div>
 
+                            <div
+                                onClick={() => setProfile({ ...profile, is_available: !profile.is_available })}
+                                className={`p-6 rounded-2xl border cursor-pointer transition-all flex items-center justify-between ${profile.is_available ? 'bg-green-500/10 border-green-500/20 text-green-400' : 'bg-zinc-900 border-white/5 text-white/40'}`}
+                            >
+                                <div>
+                                    <h4 className="font-bold">Availability Status</h4>
+                                    <p className="text-xs opacity-60">Show "Available for Hire" badge on site</p>
+                                </div>
+                                <div className={`w-12 h-6 rounded-full relative transition-colors ${profile.is_available ? 'bg-green-500' : 'bg-zinc-700'}`}>
+                                    <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${profile.is_available ? 'right-1' : 'left-1'}`} />
+                                </div>
+                            </div>
+
                             <button
                                 onClick={updateProfile}
                                 className="flex items-center gap-2 bg-white text-black font-bold px-8 py-4 rounded-full hover:scale-105 transition-transform"
@@ -585,12 +701,31 @@ export default function AdminDashboard() {
                                             />
                                         </div>
                                         <div>
-                                            <label className="block text-xs uppercase tracking-widest text-white/40 mb-2">Description</label>
+                                            <label className="block text-xs uppercase tracking-widest text-white/40 mb-2">Short Description</label>
                                             <textarea
-                                                rows={4}
+                                                rows={2}
                                                 value={editingProject ? editingProject.description : addingProjectData.description}
                                                 onChange={(e) => editingProject ? setEditingProject({ ...editingProject, description: e.target.value }) : setAddingProjectData({ ...addingProjectData, description: e.target.value })}
                                                 className="w-full bg-black border border-white/10 rounded-xl p-4 focus:border-white/30"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs uppercase tracking-widest text-white/40 mb-2">Detailed Content (Case Study)</label>
+                                            <textarea
+                                                rows={6}
+                                                value={editingProject ? editingProject.content : addingProjectData.content}
+                                                onChange={(e) => editingProject ? setEditingProject({ ...editingProject, content: e.target.value }) : setAddingProjectData({ ...addingProjectData, content: e.target.value })}
+                                                className="w-full bg-black border border-white/10 rounded-xl p-4 focus:border-white/30 font-mono text-sm"
+                                                placeholder="Write the full story of the project here..."
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs uppercase tracking-widest text-white/40 mb-2">Tech Stack (Comma Separated)</label>
+                                            <input
+                                                value={editingProject ? editingProject.stack : addingProjectData.stack}
+                                                onChange={(e) => editingProject ? setEditingProject({ ...editingProject, stack: e.target.value }) : setAddingProjectData({ ...addingProjectData, stack: e.target.value })}
+                                                className="w-full bg-black border border-white/10 rounded-xl p-4 focus:border-white/30"
+                                                placeholder="Next.js, Tailwind, Supabase..."
                                             />
                                         </div>
                                     </div>
@@ -873,7 +1008,87 @@ export default function AdminDashboard() {
                         )}
                     </motion.div>
                 )}
-                {activeTab !== 'profile' && activeTab !== 'content' && activeTab !== 'projects' && activeTab !== 'devices' && (
+                {activeTab === 'experience' && (
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-8">
+                        <div className="flex items-center justify-between">
+                            <h2 className="text-3xl font-bold">Experience Manager</h2>
+                            <button onClick={() => setIsAddingExp(true)} className="flex items-center gap-2 bg-white text-black font-bold px-6 py-3 rounded-full hover:scale-105 transition-transform">
+                                <Plus size={18} /> Add Experience
+                            </button>
+                        </div>
+                        <div className="space-y-4">
+                            {experiences.map((exp) => (
+                                <div key={exp.id} className="bg-zinc-900 border border-white/5 p-6 rounded-2xl flex items-center justify-between group">
+                                    <div>
+                                        <h3 className="font-bold text-lg">{exp.role}</h3>
+                                        <p className="text-white/40 text-sm">{exp.company} • {exp.period}</p>
+                                    </div>
+                                    <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <button onClick={() => setEditingExp(exp)} className="p-2 hover:bg-white/10 rounded-lg"><Layers size={16} /></button>
+                                        <button onClick={() => handleExpDelete(exp.id)} className="p-2 hover:bg-red-500/10 text-red-500"><Trash2 size={16} /></button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                        {(isAddingExp || editingExp) && (
+                            <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/80 backdrop-blur-sm">
+                                <div className="bg-zinc-900 border border-white/10 p-8 rounded-3xl w-full max-w-xl">
+                                    <h3 className="text-xl font-bold mb-6">{editingExp ? 'Edit Experience' : 'Add Experience'}</h3>
+                                    <div className="space-y-4">
+                                        <input value={editingExp ? editingExp.role : addingExpData.role} onChange={(e) => editingExp ? setEditingExp({ ...editingExp, role: e.target.value }) : setAddingExpData({ ...addingExpData, role: e.target.value })} placeholder="Role" className="w-full bg-black border border-white/10 p-4 rounded-xl" />
+                                        <input value={editingExp ? editingExp.company : addingExpData.company} onChange={(e) => editingExp ? setEditingExp({ ...editingExp, company: e.target.value }) : setAddingExpData({ ...addingExpData, company: e.target.value })} placeholder="Company" className="w-full bg-black border border-white/10 p-4 rounded-xl" />
+                                        <input value={editingExp ? editingExp.period : addingExpData.period} onChange={(e) => editingExp ? setEditingExp({ ...editingExp, period: e.target.value }) : setAddingExpData({ ...addingExpData, period: e.target.value })} placeholder="Period (e.g. 2021 - 2023)" className="w-full bg-black border border-white/10 p-4 rounded-xl" />
+                                        <textarea value={editingExp ? editingExp.description : addingExpData.description} onChange={(e) => editingExp ? setEditingExp({ ...editingExp, description: e.target.value }) : setAddingExpData({ ...addingExpData, description: e.target.value })} placeholder="Description" rows={3} className="w-full bg-black border border-white/10 p-4 rounded-xl" />
+                                    </div>
+                                    <div className="flex gap-4 mt-8">
+                                        <button onClick={() => handleExpSave(editingExp || addingExpData)} className="flex-1 bg-white text-black font-bold py-4 rounded-xl">Save</button>
+                                        <button onClick={() => { setIsAddingExp(false); setEditingExp(null); }} className="px-8 bg-zinc-800 rounded-xl">Cancel</button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </motion.div>
+                )}
+
+                {activeTab === 'stack' && (
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-8">
+                        <div className="flex items-center justify-between">
+                            <h2 className="text-3xl font-bold">Stack Manager</h2>
+                            <button onClick={() => setIsAddingStack(true)} className="flex items-center gap-2 bg-white text-black font-bold px-6 py-3 rounded-full hover:scale-105 transition-transform">
+                                <Plus size={18} /> Add Category
+                            </button>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {stacks.map((s) => (
+                                <div key={s.id} className="bg-zinc-900 border border-white/5 p-6 rounded-2xl group relative">
+                                    <h3 className="font-bold text-white/40 uppercase tracking-widest text-[10px] mb-2">{s.category}</h3>
+                                    <p className="text-sm font-medium">{s.tools}</p>
+                                    <div className="absolute top-4 right-4 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <button onClick={() => setEditingStack(s)} className="p-2 hover:bg-white/10 rounded-lg"><Layers size={14} /></button>
+                                        <button onClick={() => handleStackDelete(s.id)} className="p-2 hover:bg-red-500/10 text-red-500"><Trash2 size={14} /></button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                        {(isAddingStack || editingStack) && (
+                            <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/80 backdrop-blur-sm">
+                                <div className="bg-zinc-900 border border-white/10 p-8 rounded-3xl w-full max-w-xl">
+                                    <h3 className="text-xl font-bold mb-6">{editingStack ? 'Edit Category' : 'Add Category'}</h3>
+                                    <div className="space-y-4">
+                                        <input value={editingStack ? editingStack.category : addingStackData.category} onChange={(e) => editingStack ? setEditingStack({ ...editingStack, category: e.target.value }) : setAddingStackData({ ...addingStackData, category: e.target.value })} placeholder="Category (e.g. Languages)" className="w-full bg-black border border-white/10 p-4 rounded-xl" />
+                                        <textarea value={editingStack ? editingStack.tools : addingStackData.tools} onChange={(e) => editingStack ? setEditingStack({ ...editingStack, tools: e.target.value }) : setAddingStackData({ ...addingStackData, tools: e.target.value })} placeholder="Tools (Comma Separated)" rows={3} className="w-full bg-black border border-white/10 p-4 rounded-xl" />
+                                    </div>
+                                    <div className="flex gap-4 mt-8">
+                                        <button onClick={() => handleStackSave(editingStack || addingStackData)} className="flex-1 bg-white text-black font-bold py-4 rounded-xl">Save</button>
+                                        <button onClick={() => { setIsAddingStack(false); setEditingStack(null); }} className="px-8 bg-zinc-800 rounded-xl">Cancel</button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </motion.div>
+                )}
+
+                {activeTab !== 'profile' && activeTab !== 'content' && activeTab !== 'projects' && activeTab !== 'devices' && activeTab !== 'experience' && activeTab !== 'stack' && (
                     <div className="flex items-center justify-center h-full text-white/20">Module Under Construction</div>
                 )}
             </main>

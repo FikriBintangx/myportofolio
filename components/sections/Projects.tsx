@@ -17,12 +17,17 @@ interface Project {
     category: string;
     link: string;
     order: number;
+    content?: string;
+    stack?: string;
 }
+
+import ProjectDetailModal from '../ui/ProjectDetailModal';
 
 export default function Projects() {
     const { theme } = useApp();
     const [projects, setProjects] = useState<Project[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
     useEffect(() => {
         const fetchProjects = async () => {
@@ -81,8 +86,8 @@ export default function Projects() {
                                 whileInView={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.8, delay: i * 0.1 }}
                                 viewport={{ once: true }}
-                                className={i === 1 ? "md:mt-32" : ""}
-
+                                className={i === 1 ? "md:mt-32 cursor-pointer" : "cursor-pointer"}
+                                onClick={() => setSelectedProject(project)}
                             >
                                 <TiltCard>
                                     <div className="group relative aspect-[4/5] bg-zinc-100 dark:bg-zinc-900 rounded-2xl overflow-hidden mb-6 md:mb-8">
@@ -107,6 +112,11 @@ export default function Projects() {
                     </div>
                 </SectionReveal>
             </div>
+
+            <ProjectDetailModal
+                project={selectedProject}
+                onClose={() => setSelectedProject(null)}
+            />
         </section>
     );
 }
