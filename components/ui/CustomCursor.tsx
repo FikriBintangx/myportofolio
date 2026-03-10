@@ -1,11 +1,13 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { motion, useMotionValue, useSpring } from 'framer-motion';
+import { motion, useMotionValue, useSpring, AnimatePresence } from 'framer-motion';
 
 export default function CustomCursor() {
     const [isHovered, setIsHovered] = useState(false);
+    const [cursorType, setCursorType] = useState<'default' | 'view' | 'click'>('default');
     const [isMobile, setIsMobile] = useState(false);
+
     const cursorX = useMotionValue(-100);
     const cursorY = useMotionValue(-100);
 
@@ -14,10 +16,7 @@ export default function CustomCursor() {
     const cursorYSpring = useSpring(cursorY, springConfig);
 
     useEffect(() => {
-        const checkMobile = () => {
-            setIsMobile(window.innerWidth < 768);
-        };
-
+        const checkMobile = () => setIsMobile(window.innerWidth < 768);
         checkMobile();
         window.addEventListener('resize', checkMobile);
 
@@ -28,9 +27,17 @@ export default function CustomCursor() {
 
         const handleMouseOver = (e: MouseEvent) => {
             const target = e.target as HTMLElement;
-            if (target.tagName === 'A' || target.tagName === 'BUTTON' || target.closest('a') || target.closest('button')) {
+            const interactive = target.closest('a, button, [role="button"]');
+            const type = target.closest('[data-cursor]')?.getAttribute('data-cursor');
+
+            if (type) {
+                setCursorType(type as any);
+                setIsHovered(true);
+            } else if (interactive) {
+                setCursorType('click');
                 setIsHovered(true);
             } else {
+                setCursorType('default');
                 setIsHovered(false);
             }
         };
@@ -49,15 +56,29 @@ export default function CustomCursor() {
 
     return (
         <motion.div
-            className="fixed top-0 left-0 w-8 h-8 rounded-full border border-white z-[9999] pointer-events-none mix-blend-difference"
+            className="fixed top-0 left-0 w-8 h-8 rounded-full border border-white z-[9999] pointer-events-none mix-blend-difference flex items-center justify-center overflow-hidden"
             style={{
                 translateX: cursorXSpring,
                 translateY: cursorYSpring,
             }}
             animate={{
-                scale: isHovered ? 2.5 : 1,
+                scale: isHovered ? (cursorType === 'view' ? 3.5 : 2.5) : 1,
                 backgroundColor: isHovered ? 'white' : 'transparent',
+                borderColor: isHovered ? 'white' : 'rgba(255,255,255,0.5)',
             }}
-        />
+        >
+            <AnimatePresence>
+                {isHovered && cursorType === 'view' && (
+                    <motion.span
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        className="text-[4px] font-bold uppercase tracking-widest text-black"
+                    >
+                        View
+                    </motion.span>
+                )}
+            </AnimatePresence>
+        </motion.div>
     );
 }

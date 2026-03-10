@@ -10,6 +10,9 @@ import CustomCursor from "@/components/ui/CustomCursor";
 import ScrollProgress from "@/components/ui/ScrollProgress";
 import SectionReveal from "@/components/ui/SectionReveal";
 import CustomContextMenu from "@/components/ui/CustomContextMenu";
+import CommandPalette from "@/components/ui/CommandPalette";
+import ScrollIndicator from "@/components/ui/ScrollIndicator";
+import GridBackground from "@/components/ui/GridBackground";
 import { useApp } from '@/context/AppContext';
 
 // Lazy load heavy sections
@@ -53,9 +56,12 @@ export default function Home() {
       {isLoaded && (
         <>
           <CustomCursor />
+          <GridBackground />
           <ScrollProgress />
           <Navbar />
           <CustomContextMenu />
+          <CommandPalette />
+          <ScrollIndicator />
 
           <motion.div
             className="relative z-10"

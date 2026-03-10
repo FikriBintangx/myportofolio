@@ -41,7 +41,9 @@ export default function CustomContextMenu() {
                         <ContextMenuItem label="Copy Link" onClick={() => navigator.clipboard.writeText(window.location.href)} />
                         <ContextMenuItem label="Switch Theme" onClick={() => document.documentElement.classList.toggle('dark')} />
                         <div className="h-[1px] bg-foreground/5 my-1 mx-2" />
-                        <ContextMenuItem label="IS4GI.dev v2.0" sublabel="Creative Developer" />
+                        <ContextMenuItem label="Command Palette" sublabel="⌘ + K" />
+                        <div className="h-[1px] bg-foreground/5 my-1 mx-2" />
+                        <ContextMenuItem label="IS4GI.dev v2.2" sublabel="Creative Developer" />
                     </div>
                 </motion.div>
             )}

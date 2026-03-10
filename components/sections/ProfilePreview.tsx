@@ -9,6 +9,7 @@ import { createClient } from '@/lib/supabase/client'; // Use client for now due 
 import { useEffect, useState } from 'react';
 import { useApp } from '@/context/AppContext';
 import { translations } from '@/lib/translations';
+import LocalTimeWidget from '@/components/ui/LocalTimeWidget';
 
 // Define the interface
 interface ProfileData {
@@ -162,6 +163,10 @@ export default function ProfilePreview() {
                             <div>
                                 <div className="text-[9px] md:text-[10px] uppercase tracking-widest text-foreground/30 mb-1 md:mb-2">{t.location}</div>
                                 <div className="text-sm text-foreground/80">{profile.location}</div>
+                            </div>
+                            <div className="flex items-center">
+                                <span className="h-8 w-[1px] bg-foreground/10 mx-6 md:mx-10 hidden sm:block" />
+                                <LocalTimeWidget />
                             </div>
                         </div>
                     </SectionReveal>

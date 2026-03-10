@@ -58,9 +58,22 @@ body {
   overflow-x: hidden;
 }
 
-/* Smooth Image Entrances */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  transition: font-weight 0.4s cubic-bezier(0.16, 1, 0.3, 1), letter-spacing 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+h2:hover {
+  font-weight: 900;
+  letter-spacing: -0.05em;
+}
+
 img {
-  transition: opacity 0.5s ease-in-out;
+  transition: opacity 0.5s ease-in-out, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Micro-animations for buttons */

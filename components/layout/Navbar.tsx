@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 import MagneticButton from '../ui/MagneticButton';
 import { useApp } from '@/context/AppContext';
 import { translations } from '@/lib/translations';
+import SpotifyWidget from '../ui/SpotifyWidget';
 
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
@@ -67,6 +68,10 @@ export default function Navbar() {
                     layout
                     className="pointer-events-auto flex items-center gap-1 p-2 rounded-full border border-foreground/10 bg-background/40 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] ring-1 ring-white/5 transition-all duration-500 hover:bg-background/60"
                 >
+                    <div className="hidden lg:block mr-2">
+                        <SpotifyWidget />
+                    </div>
+
                     <div className="flex items-center gap-1">
                         {links.map((link) => {
                             const isActive = activeSection === link.id || (link.id === 'top' && activeSection === 'profile');
@@ -172,9 +177,11 @@ export default function Navbar() {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ delay: 0.5 }}
-                            className="mt-12 flex flex-col items-center gap-4 text-center"
+                            className="mt-12 flex flex-col items-center gap-8 text-center"
                         >
-                            <div className="flex flex-col gap-1">
+                            <SpotifyWidget />
+
+                            <div className="flex flex-col gap-4">
                                 <span className="text-[10px] uppercase tracking-[0.3em] text-foreground/20 font-mono">Kontak</span>
                                 <a href="https://wa.me/6281292870932" target="_blank" rel="noopener noreferrer" className="text-xl md:text-2xl font-bold hover:text-foreground/80 transition-colors">
                                     081292870932
