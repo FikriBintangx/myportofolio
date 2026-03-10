@@ -15,11 +15,11 @@ export default function Navbar() {
     const t = translations[language];
 
     const links = [
-        { id: 'top', name: t.home, href: '#', icon: <Home className="w-5 h-5" /> },
-        { id: 'profile', name: t.profile, href: '#profile', icon: <Smartphone className="w-5 h-5" /> },
-        { id: 'projects', name: t.projects, href: '#projects', icon: <Layers className="w-5 h-5" /> },
-        { id: 'stack', name: t.stack, href: '#stack', icon: <Code className="w-5 h-5" /> },
-        { id: 'contact', name: t.contact, href: '#contact', icon: <Mail className="w-5 h-5" /> },
+        { id: 'top', name: t.home, href: '#', icon: <Home className="w-4 h-4" /> },
+        { id: 'profile', name: t.profile, href: '#profile', icon: <Smartphone className="w-4 h-4" /> },
+        { id: 'projects', name: t.projects, href: '#projects', icon: <Layers className="w-4 h-4" /> },
+        { id: 'stack', name: t.stack, href: '#stack', icon: <Code className="w-4 h-4" /> },
+        { id: 'contact', name: t.contact, href: '#contact', icon: <Mail className="w-4 h-4" /> },
     ];
 
     useEffect(() => {
@@ -76,8 +76,8 @@ export default function Navbar() {
                                     <a
                                         href={link.href}
                                         className={cn(
-                                            "w-10 h-10 md:w-14 md:h-14 flex items-center justify-center rounded-full transition-all relative z-10",
-                                            isActive ? "text-background scale-110" : "text-foreground/40 hover:text-foreground hover:bg-foreground/5"
+                                            "w-9 h-9 md:w-11 md:h-11 flex items-center justify-center rounded-full transition-all relative z-10",
+                                            isActive ? "text-background scale-100" : "text-foreground/40 hover:text-foreground hover:bg-foreground/5"
                                         )}
                                     >
                                         <div className="relative">
@@ -112,9 +112,9 @@ export default function Navbar() {
                     <MagneticButton>
                         <button
                             onClick={toggleTheme}
-                            className="w-10 h-10 md:w-14 md:h-14 flex items-center justify-center rounded-full text-foreground/40 hover:text-foreground transition-all"
+                            className="w-9 h-9 md:w-11 md:h-11 flex items-center justify-center rounded-full text-foreground/40 hover:text-foreground transition-all"
                         >
-                            {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                            {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
                         </button>
                     </MagneticButton>
 
