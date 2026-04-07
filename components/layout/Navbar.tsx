@@ -23,11 +23,14 @@ export default function Navbar() {
         { id: 'contact', name: t.contact, href: '#contact', icon: <Mail className="w-4 h-4" /> },
     ];
 
+    const [lastScrollY, setLastScrollY] = useState(0);
+    const [hidden, setHidden] = useState(false);
+
     useEffect(() => {
         const observerOptions = {
             root: null,
             rootMargin: '0px',
-            threshold: 0.5 // 50% section visibility
+            threshold: 0.5 
         };
 
         const observerCallback = (entries: IntersectionObserverEntry[]) => {
@@ -48,6 +51,14 @@ export default function Navbar() {
 
         const handleScroll = () => {
             if (window.scrollY < 100) setActiveSection('profile');
+            
+            // Hide/Show Navbar on Scroll
+            if (window.scrollY > lastScrollY && window.scrollY > 300) {
+                setHidden(true);
+            } else {
+                setHidden(false);
+            }
+            setLastScrollY(window.scrollY);
         };
         window.addEventListener('scroll', handleScroll);
 
@@ -55,15 +66,31 @@ export default function Navbar() {
             observer.disconnect();
             window.removeEventListener('scroll', handleScroll);
         };
-    }, []);
+    }, [lastScrollY]);
+
+    const activeIndex = links.findIndex(l => l.id === activeSection || (l.id === 'top' && activeSection === 'profile'));
+    const totalSections = links.length;
 
     return (
         <>
             <motion.nav
                 initial={{ y: 100, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                className="fixed bottom-8 left-0 w-full z-50 flex justify-center pointer-events-none"
+                animate={{ 
+                    y: hidden ? 120 : 0, 
+                    opacity: hidden ? 0 : 1 
+                }}
+                transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                className="fixed bottom-8 left-0 w-full z-50 flex flex-col items-center gap-4 pointer-events-none"
             >
+                {/* Section Indicator - Point 16 */}
+                <motion.div 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="px-4 py-1.5 rounded-full bg-background/20 backdrop-blur-md border border-foreground/5 text-[9px] font-mono tracking-[0.3em] text-foreground/40 uppercase"
+                >
+                    {activeIndex + 1 >= 1 ? `0${activeIndex + 1}` : '01'} / 0{totalSections}
+                </motion.div>
+
                 <motion.div
                     layout
                     className="pointer-events-auto flex items-center gap-1 p-2 rounded-full border border-foreground/10 bg-background/40 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] ring-1 ring-white/5 transition-all duration-500 hover:bg-background/60"
@@ -142,14 +169,16 @@ export default function Navbar() {
                         animate={{ opacity: 1, clipPath: "circle(150% at 50% 100%)" }}
                         exit={{ opacity: 0, clipPath: "circle(0% at 50% 100%)" }}
                         transition={{ duration: 0.7, ease: [0.76, 0, 0.24, 1] }}
-                        className="fixed inset-0 z-[60] bg-background flex flex-col items-center justify-center text-foreground"
+                        className="fixed inset-0 z-[60] bg-background flex flex-col items-center overflow-y-auto py-20 text-foreground"
                     >
                         <button
                             onClick={() => setIsOpen(false)}
-                            className="absolute bottom-10 left-1/2 -translate-x-1/2 p-4 bg-foreground/10 hover:bg-foreground/20 rounded-full text-foreground transition-colors"
+                            className="fixed top-8 right-8 z-[70] p-4 bg-foreground/10 hover:bg-foreground hover:text-background rounded-full transition-all duration-300"
                         >
-                            <X className="w-8 h-8" />
+                            <X className="w-6 h-6" />
                         </button>
+
+
 
                         <div className="flex flex-col items-center gap-8">
                             {links.map((link, i) => (
@@ -160,7 +189,7 @@ export default function Navbar() {
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: i * 0.1 }}
                                     onClick={() => setIsOpen(false)}
-                                    className="group relative text-5xl md:text-8xl font-bold tracking-tighter text-foreground/50 hover:text-foreground transition-colors overflow-hidden"
+                                    className="group relative text-5xl md:text-8xl font-bold tracking-tighter text-foreground/40 hover:text-foreground transition-all duration-300 overflow-hidden"
                                 >
                                     <span className="inline-block transition-transform duration-500 group-hover:-translate-y-full">
                                         {link.name}
@@ -183,15 +212,27 @@ export default function Navbar() {
 
                             <div className="flex flex-col gap-4">
                                 <span className="text-[10px] uppercase tracking-[0.3em] text-foreground/20 font-mono">Kontak</span>
-                                <a href="https://wa.me/6281292870932" target="_blank" rel="noopener noreferrer" className="text-xl md:text-2xl font-bold hover:text-foreground/80 transition-colors">
+                                <button 
+                                    onClick={() => {
+                                        navigator.clipboard.writeText("081292870932");
+                                        alert("Nomor telepon disalin ke papan klip!");
+                                    }}
+                                    className="text-xl md:text-2xl font-bold hover:text-foreground/80 transition-colors cursor-pointer"
+                                >
                                     081292870932
-                                </a>
+                                </button>
                             </div>
                             <div className="flex flex-col gap-1">
                                 <span className="text-[10px] uppercase tracking-[0.3em] text-foreground/20 font-mono">Instagram</span>
-                                <a href="https://instagram.com/starbeside_u" target="_blank" rel="noopener noreferrer" className="text-xl md:text-2xl font-bold hover:text-foreground/80 transition-colors">
+                                <button 
+                                    onClick={() => {
+                                        navigator.clipboard.writeText("@starbeside_u");
+                                        alert("Instagram handle disalin ke papan klip!");
+                                    }}
+                                    className="text-xl md:text-2xl font-bold hover:text-foreground/80 transition-colors cursor-pointer"
+                                >
                                     @starbeside_u
-                                </a>
+                                </button>
                             </div>
                         </motion.div>
 

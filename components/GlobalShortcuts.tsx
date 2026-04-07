@@ -33,8 +33,30 @@ export default function GlobalShortcuts() {
             }
         };
 
+        // Konami Code Easter Egg: Up Up Down Down Left Right Left Right B A
+        const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+        let current = 0;
+
+        const handleKonami = (e: KeyboardEvent) => {
+            if (e.key === konamiCode[current]) {
+                current++;
+                if (current === konamiCode.length) {
+                    current = 0;
+                    document.documentElement.classList.add('konami-active');
+                    alert('SECRET UNLOCKED: Golden Mode Activated!');
+                }
+            } else {
+                current = 0;
+            }
+        };
+
         window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
+        window.addEventListener('keydown', handleKonami);
+
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+            window.removeEventListener('keydown', handleKonami);
+        };
     }, [toggleLanguage, cvUrl, router]);
 
     return null;

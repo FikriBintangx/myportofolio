@@ -18,6 +18,7 @@ export default function SpotifyWidget() {
     const [progress, setProgress] = useState(0);
 
     useEffect(() => {
+        document.documentElement.classList.add('spotify-playing');
         const interval = setInterval(() => {
             setProgress(prev => {
                 if (prev >= 100) {
@@ -27,7 +28,10 @@ export default function SpotifyWidget() {
                 return prev + 0.1;
             });
         }, 100);
-        return () => clearInterval(interval);
+        return () => {
+            clearInterval(interval);
+            document.documentElement.classList.remove('spotify-playing');
+        };
     }, []);
 
     return (

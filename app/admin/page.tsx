@@ -187,6 +187,8 @@ export default function AdminDashboard() {
                 alert('Project updated!');
                 setEditingProject(null);
                 fetchProjects();
+            } else {
+                alert('Update Error: ' + error.message);
             }
         } else {
             const { error } = await supabase.from('projects').insert([projectData]);
@@ -194,6 +196,8 @@ export default function AdminDashboard() {
                 alert('Project added!');
                 setIsAddingProject(false);
                 fetchProjects();
+            } else {
+                alert('Insert Error: ' + error.message);
             }
         }
     };
@@ -202,6 +206,7 @@ export default function AdminDashboard() {
         if (confirm('Delete this project?')) {
             const { error } = await supabase.from('projects').delete().eq('id', id);
             if (!error) fetchProjects();
+            else alert('Delete Error: ' + error.message);
         }
     };
 
@@ -343,9 +348,11 @@ export default function AdminDashboard() {
         if (id) {
             const { error } = await supabase.from('experience').update(dataToSave).eq('id', id);
             if (!error) { fetchExperiences(); setEditingExp(null); }
+            else alert('Update Error: ' + error.message);
         } else {
             const { error } = await supabase.from('experience').insert([dataToSave]);
             if (!error) { fetchExperiences(); setIsAddingExp(false); }
+            else alert('Insert Error: ' + error.message);
         }
     };
 
@@ -366,9 +373,11 @@ export default function AdminDashboard() {
         if (id) {
             const { error } = await supabase.from('stack').update(dataToSave).eq('id', id);
             if (!error) { fetchStacks(); setEditingStack(null); }
+            else alert('Update Error: ' + error.message);
         } else {
             const { error } = await supabase.from('stack').insert([dataToSave]);
             if (!error) { fetchStacks(); setIsAddingStack(false); }
+            else alert('Insert Error: ' + error.message);
         }
     };
 
@@ -454,15 +463,13 @@ export default function AdminDashboard() {
                 </nav>
 
                 <div className="mt-auto space-y-4">
-                    <MagneticButton>
-                        <button
-                            onClick={() => router.push('/')}
-                            className="w-full flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 text-white/60 hover:text-white px-4 py-3 rounded-xl transition-all border border-white/5"
-                        >
-                            <ArrowLeft size={16} />
-                            <span className="text-sm font-medium">Back to Site</span>
-                        </button>
-                    </MagneticButton>
+                    <button
+                        onClick={() => router.push('/')}
+                        className="w-full flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 text-white/60 hover:text-white px-4 py-3 rounded-xl transition-all border border-white/5"
+                    >
+                        <ArrowLeft size={16} />
+                        <span className="text-sm font-medium">Back to Site</span>
+                    </button>
 
                     <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 text-red-500/60 hover:text-red-500 transition-colors">
                         <LogOut size={18} />
@@ -754,12 +761,16 @@ export default function AdminDashboard() {
                                                     })}
 
                                                     {/* Upload Button */}
-                                                    <label className="aspect-video bg-black/40 border border-dashed border-white/20 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:bg-white/5 transition-colors group">
+                                                    <label 
+                                                        htmlFor="project-image-upload"
+                                                        className="aspect-video bg-black/40 border border-dashed border-white/20 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:bg-white/5 transition-colors group"
+                                                    >
                                                         <div className="bg-white/10 p-3 rounded-full mb-2 group-hover:scale-110 transition-transform">
                                                             <Plus size={20} className="text-white/60" />
                                                         </div>
                                                         <span className="text-xs font-bold text-white/40 uppercase tracking-widest">Add Image</span>
                                                         <input
+                                                            id="project-image-upload"
                                                             type="file"
                                                             onChange={handleProjectImageUpload}
                                                             className="hidden"

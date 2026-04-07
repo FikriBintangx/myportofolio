@@ -133,16 +133,17 @@ export default function ProfilePreview() {
                                 <motion.div
                                     initial={{ opacity: 0, x: -20 }}
                                     whileInView={{ opacity: 1, x: 0 }}
-                                    transition={{ duration: 0.8 }}
+                                    whileHover={{ scale: 1.05, x: 5 }}
+                                    transition={{ type: "spring", stiffness: 400, damping: 10 }}
                                     viewport={{ once: true }}
-                                    className="inline-block px-4 py-1 border border-foreground/10 rounded-full text-[10px] uppercase tracking-[0.3em] text-foreground/40"
+                                    className="inline-block px-4 py-1 border border-foreground/10 rounded-full text-[10px] uppercase tracking-[0.3em] text-foreground/40 cursor-default"
                                 >
                                     {profile.role}
                                 </motion.div>
                             </div>
                         </div>
 
-                        <h2 className="text-4xl sm:text-6xl md:text-8xl font-bold tracking-tighter text-foreground mb-6 md:mb-8 leading-[1.0] md:leading-[0.9]">
+                        <h2 className="text-4xl sm:text-6xl md:text-8xl font-bold tracking-tighter text-foreground mb-6 md:mb-8 leading-[1.0] md:leading-[0.9] chromatic-text transition-all duration-300">
                             {language === 'id' ? 'Halo, Saya' : "Hello, I'm"} <span className="text-foreground/40 italic">{profile.full_name}</span>.
                         </h2>
 
@@ -160,11 +161,15 @@ export default function ProfilePreview() {
                                 <div className="text-[9px] md:text-[10px] uppercase tracking-widest text-foreground/30 mb-1 md:mb-2">{t.status}</div>
                                 <div className="text-sm text-foreground/80">{language === 'id' && profile.status === 'University Student' ? t.student : profile.status}</div>
                             </div>
-                            <div>
-                                <div className="text-[9px] md:text-[10px] uppercase tracking-widest text-foreground/30 mb-1 md:mb-2">{t.location}</div>
-                                <div className="text-sm text-foreground/80">{profile.location}</div>
-                            </div>
-                            <div className="flex items-center">
+                             <div>
+                                 <div className="text-[9px] md:text-[10px] uppercase tracking-widest text-foreground/30 mb-1 md:mb-2">{t.location}</div>
+                                 <div className="text-sm text-foreground/80">{profile.location}</div>
+                             </div>
+                             <div className="hidden md:block">
+                                 <div className="text-[9px] md:text-[10px] uppercase tracking-widest text-foreground/30 mb-1 md:mb-2">Read Time</div>
+                                 <div className="text-sm text-foreground/80">{Math.ceil(profile.bio.split(' ').length / 200)} min read</div>
+                             </div>
+                             <div className="flex items-center">
                                 <span className="h-8 w-[1px] bg-foreground/10 mx-6 md:mx-10 hidden sm:block" />
                                 <LocalTimeWidget />
                             </div>

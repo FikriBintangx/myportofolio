@@ -4,33 +4,31 @@ import { useEffect } from 'react';
 import Lenis from 'lenis';
 
 export default function SmoothScroll({ children }: { children: React.ReactNode }) {
-  // Friend suggestion: "jangan pake scroll animasi" (don't use scroll animation)
-  // Returning children directly disables Lenis globally.
-  return <>{children}</>;
+    useEffect(() => {
+        const lenis = new Lenis({
+            duration: 1.5,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            touchMultiplier: 2,
+            infinite: false,
+        });
 
-  /* 
-  useEffect(() => {
-    const isMobile = window.innerWidth < 768; // Simple check
-    if (isMobile) return;
+        function raf(time: number) {
+            lenis.raf(time);
+            
+            // Calculate velocity and apply to CSS variable for "Smushing" (Point 48)
+            const velocity = Math.abs(lenis.velocity);
+            const smush = Math.min(0.05, velocity * 0.005);
+            document.documentElement.style.setProperty('--scroll-smush', `-${smush}em`);
+            
+            requestAnimationFrame(raf);
+        }
 
-    const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      // smooth: true, // v1 api
-    });
+        requestAnimationFrame(raf);
 
-    function raf(time: number) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
+        return () => {
+            lenis.destroy();
+        };
+    }, []);
 
-    requestAnimationFrame(raf);
-
-    return () => {
-      lenis.destroy();
-    };
-  }, []);
-
-  return <>{children}</>;
-  */
+    return <>{children}</>;
 }

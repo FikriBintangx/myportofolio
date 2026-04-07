@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Outfit } from "next/font/google"; // Updated font
 import "./globals.css";
-import SmoothScroll from "@/components/SmoothScroll";
 import { AppProvider } from "@/context/AppContext";
-import GlobalShortcuts from "@/components/GlobalShortcuts"; // Import SmoothScroll
+import GlobalShortcuts from "@/components/GlobalShortcuts"; 
+import ClientEffects from "@/components/ClientEffects";
 
 const outfit = Outfit({ subsets: ["latin"] }); // Configure Outfit
 
@@ -22,9 +22,9 @@ export default function RootLayout({
       <body className={`${outfit.className} antialiased`}>
         <AppProvider>
           <GlobalShortcuts />
-          <SmoothScroll>
+          <ClientEffects>
             {children}
-          </SmoothScroll>
+          </ClientEffects>
         </AppProvider>
       </body>
     </html>
