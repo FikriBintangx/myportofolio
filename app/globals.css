@@ -109,7 +109,28 @@ body {
   text-shadow: 
     -1px -1px 0 rgba(255, 0, 0, 0.4), 
     1px 1px 0 rgba(0, 255, 255, 0.4);
-  transition: text-shadow 0.2s ease;
+  mask-image: radial-gradient(circle at 50% 50%, black 70%, transparent 100%);
+  transition: background-color 0.8s cubic-bezier(0.16, 1, 0.3, 1), color 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  scroll-behavior: smooth;
+}
+
+/* Custom Minimalist Scrollbar (Point 18) */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(128, 128, 128, 0.2);
+  border-radius: 10px;
+  transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(128, 128, 128, 0.5);
 }
 
 h1,
@@ -119,7 +140,6 @@ h4,
 h5,
 h6 {
   transition: font-weight 0.4s cubic-bezier(0.16, 1, 0.3, 1), letter-spacing 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  letter-spacing: var(--scroll-smush, 0);
 }
 
 h2:hover {
@@ -148,7 +168,7 @@ button:active {
   opacity: 0.03;
   pointer-events: none;
   z-index: 50;
-  mix-blend-mode: overlay;
+  mix-blend-mode: soft-light;
 }
 
 @media (max-width: 768px) {
@@ -167,10 +187,10 @@ button:active {
   animation: scroll var(--animation-duration, 40s) var(--animation-direction, forwards) linear infinite;
 }
 
-/* Spotify Beat Pulse - Point 35 */
+/* Spotify Beat Pulse - Point 35 (Optimized: Removed brightness filter) */
 @keyframes spotify-beat {
-    0%, 100% { transform: scale(1); filter: brightness(1); }
-    50% { transform: scale(1.015); filter: brightness(1.1); }
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
 }
 
 html.spotify-playing .bento-card:nth-child(even) {

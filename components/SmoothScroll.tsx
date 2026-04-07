@@ -14,12 +14,6 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
 
         function raf(time: number) {
             lenis.raf(time);
-            
-            // Calculate velocity and apply to CSS variable for "Smushing" (Point 48)
-            const velocity = Math.abs(lenis.velocity);
-            const smush = Math.min(0.05, velocity * 0.005);
-            document.documentElement.style.setProperty('--scroll-smush', `-${smush}em`);
-            
             requestAnimationFrame(raf);
         }
 

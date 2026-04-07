@@ -33,9 +33,16 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     useEffect(() => {
         const savedTheme = localStorage.getItem('theme') as Theme;
         const savedLang = localStorage.getItem('lang') as Language;
+        
         if (savedTheme) {
             setTheme(savedTheme);
+        } else {
+            // Adaptive Theme (Point 13): Set based on time if no preference
+            const hour = new Date().getHours();
+            if (hour < 6 || hour > 18) setTheme('dark');
+            else setTheme('light');
         }
+        
         if (savedLang) {
             setLanguage(savedLang);
         }
@@ -53,8 +60,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
     const toggleTheme = () => setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
     const toggleLanguage = () => setLanguage(prev => (prev === 'id' ? 'en' : 'id'));
-
-    // Theme and Language logic remains. Shortcuts moved to GlobalShortcuts.
 
     return (
         <AppContext.Provider value={{ theme, language, cvUrl, toggleTheme, toggleLanguage, setCvUrl }}>
